@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, Poker2Activity!</string>
+    <string name="app_name">Five-Card-Draw Poker</string>
+    <string name="play_game">Play Game</string>
+
+</resources>

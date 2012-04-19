@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--  	
+	This is based on the developement of Daniel Nemec.  
+	Edited by Evin Schuchardt 
+-->
+
+<shape 
+	xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:shape="rectangle" >
+
+	<corners
+		android:radius="3dp" />
+	<solid
+		android:color="#ffffffff" />
+
+	<size
+		android:width="100dp"
+		android:height="150dp" />
+
+
+	<stroke
+		android:width="3dp"
+		android:color="#ffc81111" />
+	
+	<padding android:left="2dp" android:top="2dp"
+                android:right="2dp" android:bottom="2dp" />
+
+</shape>
