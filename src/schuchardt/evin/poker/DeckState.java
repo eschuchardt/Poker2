@@ -41,6 +41,21 @@ public class DeckState {
 	private static final int HEARTS = 2;
 	private static final int SPADES = 3;
 	
+	//Phases for the round
+    private static final int DEAL_PHASE = 0;
+    private static final int BET1_PHASE = 1;
+    private static final int DRAW_PHASE = 2;
+    private static final int BET2_PHASE = 3;
+    private static final int FINAL_PHASE = 4;
+    
+  //Phases for the round
+    private static final String DEAL_PHASE_STRING = "Deal";
+    private static final String BET1_PHASE_STRING = "Bid";
+    private static final String DRAW_PHASE_STRING = "Draw";
+    private static final String BET2_PHASE_STRING = "Bid";
+    private static final String FINAL_PHASE_STRING = "Deal";
+    private static final String BID_PHASE_STRING = "Bid";
+	
 	
 	//int[] deck;
 	int[] playerState;
@@ -343,6 +358,21 @@ public class DeckState {
 	}
 	public int getPhase() {
 		return phase;
+	}
+	public String getPhaseName() {
+		switch(getPhase()) {
+		case DEAL_PHASE:
+			return DEAL_PHASE_STRING;
+		case BET1_PHASE:
+			return BET1_PHASE_STRING;
+		case DRAW_PHASE:
+			return DRAW_PHASE_STRING;
+		case BET2_PHASE:
+			return BET2_PHASE_STRING;
+		case FINAL_PHASE:
+			return FINAL_PHASE_STRING;
+		}
+		return DEAL_PHASE_STRING;
 	}
 	
 	/**

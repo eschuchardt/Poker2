@@ -10,11 +10,14 @@ import java.io.ObjectOutputStream;
 import java.util.Scanner;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Poker2Activity extends Activity {
 	
@@ -62,6 +65,8 @@ public class Poker2Activity extends Activity {
     private static final int CARD3 = 2;
     private static final int CARD4 = 3;
     private static final int CARD5 = 4;
+    
+    private static final int TOAST_DURATION = 1000;
     
     
     /**
@@ -178,6 +183,11 @@ public class Poker2Activity extends Activity {
     	//end deserialize and receive
     	
     	
+    	/*
+    	 * Instead of infinite loop, just run if statements on the cases that matter.  
+    	 * The UI should handle the rest.
+    	 */
+    	
     	//TODO: remove this scanner
 //    	Scanner scan = new Scanner(System.in);
 //    	System.out.println("Player " + playerNum);
@@ -265,7 +275,7 @@ public class Poker2Activity extends Activity {
     	
     }
     
-    public static void betPhase(DeckState mDeckState, int playerNum) {
+    public static void betPhase(int playerNum) {
     	//TODO: remove this scanner
     	Scanner scan = new Scanner(System.in);
     	
@@ -378,6 +388,12 @@ public class Poker2Activity extends Activity {
         setContentView(R.layout.play_view);
         //if(D) Log.d(TAG, "success setContentView(R.layout.play_view);");
         
+        /*
+         * TODO: this needs to be done in the create portion of the game.
+         * This should only be done once.
+         */
+        mDeckState = new DeckState();
+        
         money = (TextView)findViewById(R.id.money);
         phase = (TextView)findViewById(R.id.phase);
         
@@ -393,21 +409,19 @@ public class Poker2Activity extends Activity {
         draw = (Button)findViewById(R.id.draw);
         
         //TODO: figure out how to assign each player a number.
-        money.setText("$" + mDeckState.getPlayersMoney(PLAYER_NUM));
-        phase.setText(mDeckState.getPhase());
+        money.setText("$" + Integer.toString(mDeckState.getPlayersMoney(PLAYER_NUM)));
+        phase.setText(" :" + mDeckState.getPhaseName() + " Phase");
         
         card1.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-//				Intent i = new Intent(Poker2Activity.this, MainActivity.class);
-//				startActivity(i);
 				if(card1.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.green_card).getConstantState().hashCode()) { //Crazy set of functions to find a comparison on stroke.  change to red
-					if(D) Log.d(TAG, "in color is green");
+					//if(D) Log.d(TAG, "if1");
 					//TODO: put this in the cards to be drawn
 					card1.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_card));
+					//if(D) Log.d(TAG, "card1.setBG");
 				}
 				else { //change to green
-					if(D) Log.d(TAG, "in color is red");
 					//TODO: take this out of the cards to be drawn
 					card1.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
 				}
@@ -417,29 +431,61 @@ public class Poker2Activity extends Activity {
         card2.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-//				Intent i = new Intent(Poker2Activity.this, MainActivity.class);
-//				startActivity(i);
+				if(card2.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.green_card).getConstantState().hashCode()) { //Crazy set of functions to find a comparison on stroke.  change to red
+					//if(D) Log.d(TAG, "if1");
+					//TODO: put this in the cards to be drawn
+					card2.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_card));
+					//if(D) Log.d(TAG, "card1.setBG");
+				}
+				else { //change to green
+					//TODO: take this out of the cards to be drawn
+					card2.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
+				}
 			}
 		});
         card3.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-//				Intent i = new Intent(Poker2Activity.this, MainActivity.class);
-//				startActivity(i);
+				if(card3.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.green_card).getConstantState().hashCode()) { //Crazy set of functions to find a comparison on stroke.  change to red
+					//if(D) Log.d(TAG, "if1");
+					//TODO: put this in the cards to be drawn
+					card3.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_card));
+					//if(D) Log.d(TAG, "card1.setBG");
+				}
+				else { //change to green
+					//TODO: take this out of the cards to be drawn
+					card3.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
+				}
 			}
 		});
         card4.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-//				Intent i = new Intent(Poker2Activity.this, MainActivity.class);
-//				startActivity(i);
+				if(card4.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.green_card).getConstantState().hashCode()) { //Crazy set of functions to find a comparison on stroke.  change to red
+					//if(D) Log.d(TAG, "if1");
+					//TODO: put this in the cards to be drawn
+					card4.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_card));
+					//if(D) Log.d(TAG, "card1.setBG");
+				}
+				else { //change to green
+					//TODO: take this out of the cards to be drawn
+					card4.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
+				}
 			}
 		});
         card5.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-//				Intent i = new Intent(Poker2Activity.this, MainActivity.class);
-//				startActivity(i);
+				if(card5.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.green_card).getConstantState().hashCode()) { //Crazy set of functions to find a comparison on stroke.  change to red
+					//if(D) Log.d(TAG, "if1");
+					//TODO: put this in the cards to be drawn
+					card5.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_card));
+					//if(D) Log.d(TAG, "card1.setBG");
+				}
+				else { //change to green
+					//TODO: take this out of the cards to be drawn
+					card5.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
+				}
 			}
 		});
         
@@ -452,16 +498,21 @@ public class Poker2Activity extends Activity {
 				}
 				else {
 					//TODO: make toast or something saying you can't click that yet.
+					Context context = getApplicationContext();
+					Toast toast = Toast.makeText(context, "Invalid click: current phase is " + mDeckState.getPhase(), TOAST_DURATION);
+					toast.setGravity(Gravity.BOTTOM, 0, 0);
+					toast.show();
 				}
 			}
 		});
+        //if(D) Log.d(TAG, "deal.listener");
         bid.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if(mDeckState.getPhase() == BET1_PHASE || mDeckState.getPhase() == BET2_PHASE) {
 					if(mDeckState.getPlayerUpdate(PLAYER_NUM) == FALSE) { //maker sure this player has not already updated
 						//TODO: figure out how to assign each player a number.
-						betPhase(mDeckState, PLAYER_NUM);
+						betPhase(PLAYER_NUM);
 			    		
 			    		//check to see if all players involved have finished this phase
 						if(mDeckState.isUpdated()) {
@@ -480,8 +531,10 @@ public class Poker2Activity extends Activity {
 					}
 				}
 				else {
-					//TODO: make toast or something saying you can't click that yet.
-				}
+					Context context = getApplicationContext();
+					Toast toast = Toast.makeText(context, "Invalid click: current phase is " + mDeckState.getPhaseName(), TOAST_DURATION);
+					toast.setGravity(Gravity.BOTTOM, 0, 0);
+					toast.show();				}
 			}
 		});
         fold.setOnClickListener(new View.OnClickListener() {
@@ -498,8 +551,10 @@ public class Poker2Activity extends Activity {
 					}
 				}
 				else {
-					//TODO: make toast or something saying you can't click that yet.
-				}
+					Context context = getApplicationContext();
+					Toast toast = Toast.makeText(context, "Invalid click: current phase is " + mDeckState.getPhaseName(), TOAST_DURATION);
+					toast.setGravity(Gravity.BOTTOM, 0, 0);
+					toast.show();				}
 			}
 		});
         draw.setOnClickListener(new View.OnClickListener() {
@@ -519,31 +574,29 @@ public class Poker2Activity extends Activity {
 							 * }
 							 */
 							//When this is clicked, it should see how many of the cards are red. :replacing = #redCards
-							//int replacing = 0;
+							/*
+							 * TODO: mutex on resources here.  Need to wait till this person's turn,
+							 * or at least a lull in the network so that the update of usedCards does not mess up
+							 */
 							if(card1.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.red_card).getConstantState().hashCode()); {//check to see if the card is red
 								hand[CARD1] = mDeckState.getRandomCard(mDeckState.getUsedCards(), hand); //insert random number into local hand, but not into usedCards or playersCards
 				    			mDeckState.setUsedCard(hand[CARD1]); //insert new number into usedCards
-								//replacing++;
 							}
 							if(card2.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.red_card).getConstantState().hashCode()); {//check to see if the card is red
 								hand[CARD2] = mDeckState.getRandomCard(mDeckState.getUsedCards(), hand); //insert random number into local hand, but not into usedCards or playersCards
 				    			mDeckState.setUsedCard(hand[CARD2]); //insert new number into usedCards
-								//replacing++;
 							}
 							if(card3.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.red_card).getConstantState().hashCode()); {//check to see if the card is red
 								hand[CARD3] = mDeckState.getRandomCard(mDeckState.getUsedCards(), hand); //insert random number into local hand, but not into usedCards or playersCards
 				    			mDeckState.setUsedCard(hand[CARD3]); //insert new number into usedCards
-								//replacing++;
 							}
 							if(card4.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.red_card).getConstantState().hashCode()); {//check to see if the card is red
 								hand[CARD4] = mDeckState.getRandomCard(mDeckState.getUsedCards(), hand); //insert random number into local hand, but not into usedCards or playersCards
 				    			mDeckState.setUsedCard(hand[CARD4]); //insert new number into usedCards
-								//replacing++;
 							}
 							if(card5.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.red_card).getConstantState().hashCode()); {//check to see if the card is red
 								hand[CARD5] = mDeckState.getRandomCard(mDeckState.getUsedCards(), hand); //insert random number into local hand, but not into usedCards or playersCards
 				    			mDeckState.setUsedCard(hand[CARD5]); //insert new number into usedCards
-								//replacing++;
 							}
 							mDeckState.setPlayersCards(hand, PLAYER_NUM); //replace cards in deckstate
 							
@@ -562,12 +615,11 @@ public class Poker2Activity extends Activity {
 					}
 				}
 				else {
-					//TODO: make toast or something saying you can't click that yet.
-				}
+					Context context = getApplicationContext();
+					Toast toast = Toast.makeText(context, "Invalid click: current phase is " + mDeckState.getPhaseName(), TOAST_DURATION);
+					toast.setGravity(Gravity.BOTTOM, 0, 0);
+					toast.show();				}
 			}
 		});
-        
     }
-    
-   
 }
