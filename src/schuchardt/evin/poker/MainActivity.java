@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import ec.nem.bluenet.BuildNetworkActivity;
 
 public class MainActivity extends Activity {
 	
@@ -13,6 +14,8 @@ public class MainActivity extends Activity {
 	private final static boolean D = true;
 	private final static String TAG = "MainActivity";
 		
+	private static final int RESULT_BUILD_NETWORK = 3478344;
+	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,9 +29,25 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				if(D) Log.d(TAG, "in onClick");
-				Intent i = new Intent(MainActivity.this, Poker2Activity.class);
-				startActivity(i);
+//				Intent i = new Intent(MainActivity.this, Poker2Activity.class);
+				Intent i = new Intent(MainActivity.this, BuildNetworkActivity.class);
+				//startActivity(i);
+				startActivityForResult(i, RESULT_BUILD_NETWORK);
 			}
 		});
     }
+    
+    @Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data){
+		super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode == RESULT_BUILD_NETWORK){
+			if(resultCode == RESULT_OK){
+				Intent intent = new Intent(this, Poker2Activity.class);
+				startActivity(intent);
+			}
+			else if(resultCode == RESULT_CANCELED){
+				// Could not connect.
+			}
+		}
+	}
 }
