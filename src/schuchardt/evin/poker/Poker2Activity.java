@@ -7,15 +7,20 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.util.Scanner;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,7 +61,7 @@ public class Poker2Activity extends Activity {
 	private static final int BID_PHASE_RAISE = 2;
 	private static final int BID_PHASE_FOLD = 3;
     
-    static DeckState mDeckState;
+    private static DeckState mDeckState = new DeckState();
     
     //for use in last section
     private static final int CARDS_IN_HAND = 5;
@@ -67,6 +72,68 @@ public class Poker2Activity extends Activity {
     private static final int CARD5 = 4;
     
     private static final int TOAST_DURATION = 1000;
+    
+    //Context Menu Options
+    private static final String CHECK_STRING = "Check";
+    private static final String CALL_STRING = "Call";
+    private static final String RAISE_STRING = "Raise";
+    
+    //Card Value Strings
+    private static final String ACE_OF_DIAMONDS = "Ace Dmds";
+    private static final String TWO_OF_DIAMONDS = "2 Dmds";
+    private static final String THREE_OF_DIAMONDS = "3 Dmds";
+    private static final String FOUR_OF_DIAMONDS = "4 Dmds";
+    private static final String FIVE_OF_DIAMONDS = "5 Dmds";
+    private static final String SIX_OF_DIAMONDS = "6 Dmds";
+    private static final String SEVEN_OF_DIAMONDS = "7 Dmds";
+    private static final String EIGHT_OF_DIAMONDS = "8 Dmds";
+    private static final String NINE_OF_DIAMONDS = "9 Dmds";
+    private static final String TEN_OF_DIAMONDS = "10 Dmds";
+    private static final String JACK_OF_DIAMONDS = "Jack Dmds";
+    private static final String QUEEN_OF_DIAMONDS = "Queen Dmds";
+    private static final String KING_OF_DIAMONDS = "King Dmds";
+    
+    private static final String ACE_OF_CLUBS = "Ace Clbs";
+    private static final String TWO_OF_CLUBS = "2 Clbs";
+    private static final String THREE_OF_CLUBS = "3 Clbs";
+    private static final String FOUR_OF_CLUBS = "4 Clbs";
+    private static final String FIVE_OF_CLUBS = "5 Clbs";
+    private static final String SIX_OF_CLUBS = "6 Clbs";
+    private static final String SEVEN_OF_CLUBS = "7 Clbs";
+    private static final String EIGHT_OF_CLUBS = "8 Clbs";
+    private static final String NINE_OF_CLUBS = "9 Clbs";
+    private static final String TEN_OF_CLUBS = "10 Clbs";
+    private static final String JACK_OF_CLUBS = "Jack Clbs";
+    private static final String QUEEN_OF_CLUBS = "Queen Clbs";
+    private static final String KING_OF_CLUBS = "King Clbs";
+    
+    private static final String ACE_OF_HEARTS = "Ace Hrts";
+    private static final String TWO_OF_HEARTS = "2 Hrts";
+    private static final String THREE_OF_HEARTS = "3 Hrts";
+    private static final String FOUR_OF_HEARTS = "4 Hrts";
+    private static final String FIVE_OF_HEARTS = "5 Hrts";
+    private static final String SIX_OF_HEARTS = "6 Hrts";
+    private static final String SEVEN_OF_HEARTS = "7 Hrts";
+    private static final String EIGHT_OF_HEARTS = "8 Hrts";
+    private static final String NINE_OF_HEARTS = "9 Hrts";
+    private static final String TEN_OF_HEARTS = "10 Hrts";
+    private static final String JACK_OF_HEARTS = "Jack Hrts";
+    private static final String QUEEN_OF_HEARTS = "Queen Hrts";
+    private static final String KING_OF_HEARTS = "King Hrts";
+    
+    private static final String ACE_OF_SPADES = "Ace Spds";
+    private static final String TWO_OF_SPADES = "2 Spds";
+    private static final String THREE_OF_SPADES = "3 Spds";
+    private static final String FOUR_OF_SPADES = "4 Spds";
+    private static final String FIVE_OF_SPADES = "5 Spds";
+    private static final String SIX_OF_SPADES = "6 Spds";
+    private static final String SEVEN_OF_SPADES = "7 Spds";
+    private static final String EIGHT_OF_SPADES = "8 Spds";
+    private static final String NINE_OF_SPADES = "9 Spds";
+    private static final String TEN_OF_SPADES = "10 Spds";
+    private static final String JACK_OF_SPADES = "Jack Spds";
+    private static final String QUEEN_OF_SPADES = "Queen Spds";
+    private static final String KING_OF_SPADES = "King Spds";
     
     
     /**
@@ -203,7 +270,7 @@ public class Poker2Activity extends Activity {
     		//mDeckState.getHand(hand, playerNum);
     		if(mDeckState.getPlayerUpdate(playerNum) == FALSE) {
     			//TODO: undo this following comment
-    			mDeckState.dealCards(hand, mDeckState.getUsedCards());
+    			mDeckState.dealCards(hand, mDeckState.getUsedCards(), PLAYER_NUM);
     			
 //    			/*
 //    			 * TODO: THIS IS THE TESTING PART
@@ -275,89 +342,122 @@ public class Poker2Activity extends Activity {
     	
     }
     
-    public static void betPhase(int playerNum) {
-    	//TODO: remove this scanner
-    	Scanner scan = new Scanner(System.in);
-    	
-    	int[] hand;
-    	boolean whileFlag = true;
-    	int bid = 0;
-    	
-    	while(whileFlag) {
-			if(mDeckState.getPlayerState(playerNum) == FOLD) {
-				break;
-			}
-    		if(mDeckState.getPlayerUpdate(playerNum) == FALSE) {
-    			System.out.println("Options: \n" +
-    					"0. Check\n" +
-    					"1. Call\n" +
-    					"2. Raise");
-    			int bidPhaseOption = scan.nextInt();
-    			switch(bidPhaseOption) {
-    			case BID_PHASE_CHECK:
-    				//check if current bid is higher than bid
-    				//if it is, replace currentBid with bid
-    				//if bid is good, set flag to false
-    				//else repeat and say why it didn't work
-    				bid = mDeckState.getPlayersBids(playerNum);
-    				if(mDeckState.checkGoodCheck(bid)) {
-    					mDeckState.setCurrentBid(bid);
-    					mDeckState.setPlayerUpdate(playerNum, TRUE);
-    					whileFlag = false; //break the loop.
-    				}
-    				else {
-    					System.out.println("\n Cannot Check.\n");
-    				}
-    				break;
-    			case BID_PHASE_CALL:
-    				//check if current bid is higher than bid
-    				//if bid is good, set flag to false
-    				//else repeat and say why it didn't work
-    				bid = mDeckState.getCurrentBid();
-    				if(mDeckState.getPlayersBids(playerNum) != bid) {
-    					//don't need to set current bid because he just called to the current highest bid.
-    					mDeckState.bidMoney(bid, playerNum); //subtract this from his total money 
-    					mDeckState.setPlayersBids(bid, playerNum);
-    					mDeckState.setPlayerUpdate(playerNum, TRUE);
-    					whileFlag = false; //break the loop.
-    				}
-    				else {
-    					System.out.println("\n Cannot Call.\n");
-    				}
-    				break;
-    			case BID_PHASE_RAISE:
-    				//check if current bid is higher than bid
-    				//if bid is good, set flag to false
-    				//else repeat and say why it didn't work
-    				System.out.println("You have " + mDeckState.getPlayersMoney(playerNum) + " to bid.\n Enter amount: ");
-    				//TODO: check to see if they enter a valid amount.
-    				bid = scan.nextInt();
-    				if(mDeckState.checkGoodRaise(bid)) {
-    					mDeckState.bidMoney(bid, playerNum); //subtract this from his total money 
-    					mDeckState.setPlayersBids(bid, playerNum);
-    					mDeckState.setCurrentBid(bid);
-    					mDeckState.setPlayerUpdateAndClear(playerNum, TRUE);
-    					whileFlag = false; //break the loop.
-    				}
-    				else {
-    					System.out.println("\n Did not outbid max.\n");
-    				}
-    				break;
-    			case BID_PHASE_FOLD:
-    				break;
-    			default:
-    				//TODO: put in while loop for user input or something
-    				System.out.println("\n Did not recognize input.\n");
-    				break;
-    			}
-    		}
-		} //end while loop
-    }
     
     /*
-     * This middle section is a segue of helper functions for the UI.
+     * Helper functions for last section
      */
-
+    public static String findCardString(int card) {
+    	switch(card) {
+    	case 0:
+    		return ACE_OF_DIAMONDS;
+    	case 1:
+    		return TWO_OF_DIAMONDS;
+    	case 2:
+    		return THREE_OF_DIAMONDS;
+    	case 3:
+    		return FOUR_OF_DIAMONDS;
+    	case 4:
+    		return FIVE_OF_DIAMONDS;
+    	case 5:
+    		return SIX_OF_DIAMONDS;
+    	case 6:
+    		return SEVEN_OF_DIAMONDS;
+    	case 7:
+    		return EIGHT_OF_DIAMONDS;
+    	case 8:
+    		return NINE_OF_DIAMONDS;
+    	case 9:
+    		return TEN_OF_DIAMONDS;
+    	case 10:
+    		return JACK_OF_DIAMONDS;
+    	case 11:
+    		return QUEEN_OF_DIAMONDS;
+    	case 12:
+    		return KING_OF_DIAMONDS;
+    	case 13:
+    		return ACE_OF_CLUBS;
+    	case 14:
+    		return TWO_OF_CLUBS;
+    	case 15:
+    		return THREE_OF_CLUBS;
+    	case 16:
+    		return FOUR_OF_CLUBS;
+    	case 17:
+    		return FIVE_OF_CLUBS;
+    	case 18:
+    		return SIX_OF_CLUBS;
+    	case 19:
+    		return SEVEN_OF_CLUBS;
+    	case 20:
+    		return EIGHT_OF_CLUBS;
+    	case 21:
+    		return NINE_OF_CLUBS;
+    	case 22:
+    		return TEN_OF_CLUBS;
+    	case 23:
+    		return JACK_OF_CLUBS;
+    	case 24:
+    		return QUEEN_OF_CLUBS;
+    	case 25:
+    		return KING_OF_CLUBS;
+    	case 26:
+    		return ACE_OF_HEARTS;
+    	case 27:
+    		return TWO_OF_HEARTS;
+    	case 28:
+    		return THREE_OF_HEARTS;
+    	case 29:
+    		return FOUR_OF_HEARTS;
+    	case 30:
+    		return FIVE_OF_HEARTS;
+    	case 31:
+    		return SIX_OF_HEARTS;
+    	case 32:
+    		return SEVEN_OF_HEARTS;
+    	case 33:
+    		return EIGHT_OF_HEARTS;
+    	case 34:
+    		return NINE_OF_HEARTS;
+    	case 35:
+    		return TEN_OF_HEARTS;
+    	case 36:
+    		return JACK_OF_HEARTS;
+    	case 37:
+    		return QUEEN_OF_HEARTS;
+    	case 38:
+    		return KING_OF_HEARTS;
+    	case 39:
+    		return ACE_OF_SPADES;
+    	case 40:
+    		return TWO_OF_SPADES;
+    	case 41:
+    		return THREE_OF_SPADES;
+    	case 42:
+    		return FOUR_OF_SPADES;
+    	case 43:
+    		return FIVE_OF_SPADES;
+    	case 44:
+    		return SIX_OF_SPADES;
+    	case 45:
+    		return SEVEN_OF_SPADES;
+    	case 46:
+    		return EIGHT_OF_SPADES;
+    	case 47:
+    		return NINE_OF_SPADES;
+    	case 48:
+    		return TEN_OF_SPADES;
+    	case 49:
+    		return JACK_OF_SPADES;
+    	case 50:
+    		return QUEEN_OF_SPADES;
+    	case 51:
+    		return KING_OF_SPADES;
+		default:
+			return "";
+			//TODO: Change this return value on default
+    	}
+    }
+    
     
     
 	/*
@@ -392,7 +492,8 @@ public class Poker2Activity extends Activity {
          * TODO: this needs to be done in the create portion of the game.
          * This should only be done once.
          */
-        mDeckState = new DeckState();
+        
+        
         
         money = (TextView)findViewById(R.id.money);
         phase = (TextView)findViewById(R.id.phase);
@@ -412,79 +513,113 @@ public class Poker2Activity extends Activity {
         money.setText("$" + Integer.toString(mDeckState.getPlayersMoney(PLAYER_NUM)));
         phase.setText(" :" + mDeckState.getPhaseName() + " Phase");
         
+        if(((DeckState) getLastNonConfigurationInstance()) != null) {
+        	mDeckState = (DeckState)getLastNonConfigurationInstance();
+        }
+        if (mDeckState == null) { //then this is a new game thing
+        	//TODO: find someway to handle this
+        	//mDeckState = new DeckState();
+        }
+        else {
+        	if(true/*mDeckState.hasBeenDealt(PLAYER_NUM)*/) { //this player already has a hand
+        		
+        		int[] hand = new int[5];
+        		mDeckState.getHand(hand, PLAYER_NUM);
+        		//TODO: REMOVE THIS NEXT LINE
+        		//hand[0] = savedInstanceState.getInt("hand0");
+        		
+        		card1.setText(findCardString(hand[0]));
+    			card2.setText(findCardString(hand[1]));
+    			card3.setText(findCardString(hand[2]));
+    			card4.setText(findCardString(hand[3]));
+    			card5.setText(findCardString(hand[4]));
+        	}
+        }
+        mDeckState.setPhase(FINAL_PHASE);
+        
+        
         card1.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if(card1.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.green_card).getConstantState().hashCode()) { //Crazy set of functions to find a comparison on stroke.  change to red
-					//if(D) Log.d(TAG, "if1");
-					//TODO: put this in the cards to be drawn
-					card1.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_card));
-					//if(D) Log.d(TAG, "card1.setBG");
+				if(mDeckState.getPhase() == DRAW_PHASE) {
+					if(card1.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.green_card).getConstantState().hashCode()) { //Crazy set of functions to find a comparison on stroke.  change to red
+						//if(D) Log.d(TAG, "if1");
+						//TODO: put this in the cards to be drawn
+						card1.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_card));
+						//if(D) Log.d(TAG, "card1.setBG");
+					}
+					else { //change to green
+						//TODO: take this out of the cards to be drawn
+						card1.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
+					}
 				}
-				else { //change to green
-					//TODO: take this out of the cards to be drawn
-					card1.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
-				}
-				
 			}
 		});
         card2.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if(card2.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.green_card).getConstantState().hashCode()) { //Crazy set of functions to find a comparison on stroke.  change to red
-					//if(D) Log.d(TAG, "if1");
-					//TODO: put this in the cards to be drawn
-					card2.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_card));
-					//if(D) Log.d(TAG, "card1.setBG");
-				}
-				else { //change to green
-					//TODO: take this out of the cards to be drawn
-					card2.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
+				if(mDeckState.getPhase() == DRAW_PHASE) {
+					if(card2.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.green_card).getConstantState().hashCode()) { //Crazy set of functions to find a comparison on stroke.  change to red
+						//if(D) Log.d(TAG, "if1");
+						//TODO: put this in the cards to be drawn
+						card2.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_card));
+						//if(D) Log.d(TAG, "card1.setBG");
+					}
+					else { //change to green
+						//TODO: take this out of the cards to be drawn
+						card2.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
+					}
 				}
 			}
 		});
         card3.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if(card3.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.green_card).getConstantState().hashCode()) { //Crazy set of functions to find a comparison on stroke.  change to red
-					//if(D) Log.d(TAG, "if1");
-					//TODO: put this in the cards to be drawn
-					card3.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_card));
-					//if(D) Log.d(TAG, "card1.setBG");
-				}
-				else { //change to green
-					//TODO: take this out of the cards to be drawn
-					card3.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
+				if(mDeckState.getPhase() == DRAW_PHASE) {
+					if(card3.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.green_card).getConstantState().hashCode()) { //Crazy set of functions to find a comparison on stroke.  change to red
+						//if(D) Log.d(TAG, "if1");
+						//TODO: put this in the cards to be drawn
+						card3.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_card));
+						//if(D) Log.d(TAG, "card1.setBG");
+					}
+					else { //change to green
+						//TODO: take this out of the cards to be drawn
+						card3.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
+					}
 				}
 			}
 		});
         card4.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if(card4.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.green_card).getConstantState().hashCode()) { //Crazy set of functions to find a comparison on stroke.  change to red
-					//if(D) Log.d(TAG, "if1");
-					//TODO: put this in the cards to be drawn
-					card4.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_card));
-					//if(D) Log.d(TAG, "card1.setBG");
-				}
-				else { //change to green
-					//TODO: take this out of the cards to be drawn
-					card4.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
+				if(mDeckState.getPhase() == DRAW_PHASE) {
+					if(card4.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.green_card).getConstantState().hashCode()) { //Crazy set of functions to find a comparison on stroke.  change to red
+						//if(D) Log.d(TAG, "if1");
+						//TODO: put this in the cards to be drawn
+						card4.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_card));
+						//if(D) Log.d(TAG, "card1.setBG");
+					}
+					else { //change to green
+						//TODO: take this out of the cards to be drawn
+						card4.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
+					}
 				}
 			}
 		});
         card5.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if(card5.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.green_card).getConstantState().hashCode()) { //Crazy set of functions to find a comparison on stroke.  change to red
-					//if(D) Log.d(TAG, "if1");
-					//TODO: put this in the cards to be drawn
-					card5.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_card));
-					//if(D) Log.d(TAG, "card1.setBG");
-				}
-				else { //change to green
-					//TODO: take this out of the cards to be drawn
-					card5.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
+				if(mDeckState.getPhase() == DRAW_PHASE) {
+					if(card5.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.green_card).getConstantState().hashCode()) { //Crazy set of functions to find a comparison on stroke.  change to red
+						//if(D) Log.d(TAG, "if1");
+						//TODO: put this in the cards to be drawn
+						card5.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_card));
+						//if(D) Log.d(TAG, "card1.setBG");
+					}
+					else { //change to green
+						//TODO: take this out of the cards to be drawn
+						card5.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
+					}
 				}
 			}
 		});
@@ -495,6 +630,18 @@ public class Poker2Activity extends Activity {
 				//TODO: make sure that only one person presses this??
 				if(mDeckState.getPhase() == FINAL_PHASE) {
 					//TODO: action for dealing
+					if(mDeckState.getPlayerUpdate(PLAYER_NUM) == FALSE) {
+						int[] hand = new int[CARDS_IN_HAND];
+		    			mDeckState.dealCards(hand, mDeckState.getUsedCards(), PLAYER_NUM); //Only deal to that player
+		    		
+		    			//Refresh the cards and have them appear on the text view.
+		    			card1.setText(findCardString(hand[0]));
+		    			card2.setText(findCardString(hand[1]));
+		    			card3.setText(findCardString(hand[2]));
+		    			card4.setText(findCardString(hand[3]));
+		    			card5.setText(findCardString(hand[4]));
+		    			
+					}
 				}
 				else {
 					//TODO: make toast or something saying you can't click that yet.
@@ -504,39 +651,11 @@ public class Poker2Activity extends Activity {
 					toast.show();
 				}
 			}
-		});
-        //if(D) Log.d(TAG, "deal.listener");
-        bid.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if(mDeckState.getPhase() == BET1_PHASE || mDeckState.getPhase() == BET2_PHASE) {
-					if(mDeckState.getPlayerUpdate(PLAYER_NUM) == FALSE) { //maker sure this player has not already updated
-						//TODO: figure out how to assign each player a number.
-						betPhase(PLAYER_NUM);
-			    		
-			    		//check to see if all players involved have finished this phase
-						if(mDeckState.isUpdated()) {
-			    			mDeckState.setPhase(DRAW_PHASE);
-			    			mDeckState.initPlayerUpdate();
-			    		}
-						
-			    		//check to see if there are still more than one player who has not folded.
-						//if there is not, set state to FINAL_PHASE
-						if(!mDeckState.checkPlayerState()) {
-							mDeckState.setPhase(FINAL_PHASE);
-						}
-					}
-					else {
-						//TODO: toast to the fact that they need to hold their horses until the other players do their thing
-					}
-				}
-				else {
-					Context context = getApplicationContext();
-					Toast toast = Toast.makeText(context, "Invalid click: current phase is " + mDeckState.getPhaseName(), TOAST_DURATION);
-					toast.setGravity(Gravity.BOTTOM, 0, 0);
-					toast.show();				}
-			}
-		});
+		}); 
+        
+
+        registerForContextMenu(bid); 
+        
         fold.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -622,4 +741,141 @@ public class Poker2Activity extends Activity {
 			}
 		});
     }
+    
+    @Override  
+    public void onCreateContextMenu(ContextMenu menu, View v,ContextMenuInfo menuInfo) {  
+    	super.onCreateContextMenu(menu, v, menuInfo);  
+    	
+        menu.setHeaderTitle("Options");  
+        menu.add(0, v.getId(), 0, "Check");  
+        menu.add(0, v.getId(), 0, "Call");  
+        menu.add(0, v.getId(), 0, "Raise");
+    }  
+  
+    @Override  
+    public boolean onContextItemSelected(MenuItem item) {  
+    	if(mDeckState.getPhase() == BET1_PHASE || mDeckState.getPhase() == BET2_PHASE) {
+			if(mDeckState.getPlayerUpdate(PLAYER_NUM) == FALSE) { //maker sure this player has not already updated
+		       
+				if(item.getTitle()=="Check"){
+		        	//check if current bid is higher than bid
+    				//if it is, replace currentBid with bid
+    				//if bid is good, set flag to false
+    				//else repeat and say why it didn't work
+    				int playerBid = mDeckState.getPlayersBids(PLAYER_NUM);
+    				if(mDeckState.checkGoodCheck(playerBid)) {
+    					mDeckState.setCurrentBid(playerBid);
+    					mDeckState.setPlayerUpdate(PLAYER_NUM, TRUE);
+    				}
+    				else {
+    					Context context = getApplicationContext();
+    					Toast toast = Toast.makeText(context, "Cannot Check.", TOAST_DURATION);
+    					toast.setGravity(Gravity.BOTTOM, 0, 0);
+    					toast.show();
+    				}
+		        }  
+		        else {
+		        	
+		        	if(item.getTitle()=="Call"){
+		        		//check if current bid is higher than bid
+	    				//if bid is good, set flag to false
+	    				//else repeat and say why it didn't work
+	    				int playerBid = mDeckState.getCurrentBid();
+	    				if(mDeckState.getPlayersBids(PLAYER_NUM) != playerBid) {
+	    					//don't need to set current bid because he just called to the current highest bid.
+	    					mDeckState.bidMoney(playerBid, PLAYER_NUM); //subtract this from his total money 
+	    					mDeckState.setPlayersBids(playerBid, PLAYER_NUM);
+	    					mDeckState.setPlayerUpdate(PLAYER_NUM, TRUE);
+	    				}
+	    				else {
+	    					Context context = getApplicationContext();
+	    					Toast toast = Toast.makeText(context, "Cannot Call.", TOAST_DURATION);
+	    					toast.setGravity(Gravity.BOTTOM, 0, 0);
+	    					toast.show();
+	    				}
+		        	}
+		        	else {
+		        		
+		        		if(item.getTitle()=="Raise"){
+		        			//check if current bid is higher than bid
+		    				//if bid is good, set flag to false
+		    				//else repeat and say why it didn't work
+		    				//TODO: check to see if they enter a valid amount.
+		        			
+		        			
+		        			//BEGIN code to have user input bid
+		        			AlertDialog.Builder alert = new AlertDialog.Builder(this);
+		        			alert.setTitle("Raise");
+		        			alert.setMessage("Please enter raise.");
+		        			// Set an EditText view to get user input 
+		        			final EditText input = new EditText(this);
+		        			alert.setView(input);
+		        			alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+		        				public void onClick(DialogInterface dialog, int whichButton) {
+		        					int playerBid = Integer.parseInt(input.getText().toString());
+		        					if(mDeckState.checkGoodRaise(playerBid)) {
+				    					mDeckState.bidMoney(playerBid, PLAYER_NUM); //subtract this from his total money 
+				    					mDeckState.setPlayersBids(playerBid, PLAYER_NUM);
+				    					mDeckState.setCurrentBid(playerBid);
+				    					mDeckState.setPlayerUpdateAndClear(PLAYER_NUM, TRUE);
+				    				}
+				    				else {
+				    					Context context = getApplicationContext();
+				    					Toast toast = Toast.makeText(context, "Try Again.", TOAST_DURATION);
+				    					toast.setGravity(Gravity.BOTTOM, 0, 0);
+				    					toast.show();
+				    				}
+		        				}
+		        			});
+		        			alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		        			 public void onClick(DialogInterface dialog, int whichButton) {
+		        			     // Canceled.
+		        			}
+		        			});
+		        			alert.show();
+		        			//END code to have user input bid
+		        			
+		        		}
+		        		else {return false;}  
+		        	}
+		        }
+		        //check to see if all players involved have finished this phase
+				if(mDeckState.isUpdated()) {
+	    			mDeckState.setPhase(DRAW_PHASE);
+	    			mDeckState.initPlayerUpdate();
+	    		}
+				
+	    		//check to see if there are still more than one player who has not folded.
+				//if there is not, set state to FINAL_PHASE
+				if(!mDeckState.checkPlayerState()) {
+					mDeckState.setPhase(FINAL_PHASE);
+				}
+			}
+        	else {
+				//TODO: toast to the fact that they need to hold their horses until the other players do their thing
+			}
+        }
+        else {
+			Context context = getApplicationContext();
+			Toast toast = Toast.makeText(context, "Invalid click: current phase is " + mDeckState.getPhaseName(), TOAST_DURATION);
+			toast.setGravity(Gravity.BOTTOM, 0, 0);
+			toast.show();				
+		}
+    return true;  
+    }  
+    
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+        final DeckState state = Poker2Activity.mDeckState;
+        return state;
+    }
+    
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+    	savedInstanceState.putInt("hand0", mDeckState.getPlayersCards()[0]);
+    	super.onSaveInstanceState(savedInstanceState);
+    }
+   
+    
+    
 }

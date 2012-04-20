@@ -92,7 +92,9 @@ public class DeckState {
 //		playersPreviousBids = new int[4];
 //		initiPlayersPreviousBids();
 		playersCards = new int[20];
+		initPlayersCards();
 		usedCards = new int[52];
+		initUsedCards();
 		playerUpdate = new int[4];
 		playersMoney = new int[4];
 		for(int i=0; i<playersMoney.length; i++) {
@@ -177,11 +179,12 @@ public class DeckState {
 	
 	/**
      * Deals the cards based upon cards that have already been dealt to other players.
+     * Only deals to that player
      * @param hand  the hand of a player to be passed in.
      * @param usedCards  used cards from all players.
      * @return
      */
-	public void dealCards(int[] hand, int[] usedCards) {
+	public void dealCards(int[] hand, int[] usedCards, int playerNum) {
     	int cardCount = 0;
     	int ranNumber;
     	boolean acceptCard = true;
@@ -204,6 +207,7 @@ public class DeckState {
 				acceptCard = checkLegalCard(hand, ranNumber);
 				if(acceptCard) {
 					hand[cardCount] = ranNumber;
+					setUsedCard(hand[cardCount]);
     				cardCount++;
 				} //end if
 			} //end if
@@ -211,6 +215,8 @@ public class DeckState {
 			//reset accept true to true
     		acceptCard = true;
     	} //end while
+    	setPlayersCards(hand, playerNum);
+    	//setUsedCards(hand);
     } //end dealCards()
 	
 	public int getRandomCard(int[] uCards, int[] hand) {
@@ -453,6 +459,13 @@ public class DeckState {
 	}
 	public int getPlayersFinalHand(int playerNum) {
 		return playersFinalHand[playerNum];
+	}
+	
+	public boolean hasBeenDealt(int playerNum) {
+		if(playersCards[playerNum*5] == 52) { //has not been dealt yet
+			return false;
+		}
+		return true;
 	}
 	
 	/*

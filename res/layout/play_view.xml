@@ -33,6 +33,7 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
+	    android:gravity="center_horizontal"
 	    android:orientation="horizontal" >
     
         <TextView
@@ -40,12 +41,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/green_card"
+            android:gravity="center_vertical|center_horizontal"
+            android:textColor="#ff000000"
             android:padding="2dp" />
 	    <TextView
 	        android:id="@+id/card2"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:background="@drawable/green_card"
+	        android:gravity="center_vertical|center_horizontal"
+	        android:textColor="#ff000000"
 	        android:padding="2dp" />
 
 	</LinearLayout>
@@ -53,6 +58,7 @@
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
+	    android:gravity="center_horizontal"
 	    android:orientation="horizontal" >
 
         <TextView
@@ -60,6 +66,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/green_card"
+            android:gravity="center_vertical|center_horizontal"
+            android:textColor="#ff000000"
             android:padding="2dp" />
 
 	    <TextView
@@ -67,6 +75,8 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:background="@drawable/green_card"
+	        android:gravity="center_vertical|center_horizontal"
+	        android:textColor="#ff000000"
 	        android:padding="2dp" />
 	    
 	    <TextView
@@ -74,6 +84,8 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:background="@drawable/green_card"
+	        android:gravity="center_vertical|center_horizontal"
+	        android:textColor="#ff000000"
 	        android:padding="2dp" />
 	
     </LinearLayout>

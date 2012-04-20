@@ -21,7 +21,7 @@
 
 	<stroke
 		android:width="3dp"
-		android:color="#ff00ff00" />
+		android:color="#00008B" />
 	
 	<padding android:left="2dp" android:top="2dp"
                 android:right="2dp" android:bottom="2dp" />
