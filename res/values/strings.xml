@@ -4,5 +4,9 @@
     <string name="hello">Hello World, Poker2Activity!</string>
     <string name="app_name">Five-Card-Draw Poker</string>
     <string name="play_game">Play Game</string>
+    <string name="deal">Deal</string>
+    <string name="bid">Bid</string>
+    <string name="fold">Fold</string>
+    <string name="draw">Draw</string>
 
 </resources>
