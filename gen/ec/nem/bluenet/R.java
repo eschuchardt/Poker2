@@ -13,38 +13,58 @@ public final class R {
     public static final class drawable {
         public static final int green_card=0x7f020000;
         public static final int ic_launcher=0x7f020001;
-        public static final int poker_ic_launcher=0x7f020002;
-        public static final int red_card=0x7f020003;
+        public static final int poker_cards_splash=0x7f020002;
+        public static final int poker_ic_launcher=0x7f020003;
+        public static final int red_card=0x7f020004;
+        public static final int small_card=0x7f020005;
     }
     public static final class id {
         public static final int begin_game_button=0x7f050009;
-        public static final int bid=0x7f050014;
+        public static final int bid=0x7f05001c;
         public static final int build_network_button_strut=0x7f050008;
         public static final int build_network_buttons_layout=0x7f050007;
-        public static final int card1=0x7f05000e;
-        public static final int card2=0x7f05000f;
-        public static final int card3=0x7f050010;
-        public static final int card4=0x7f050011;
-        public static final int card5=0x7f050012;
+        public static final int card1=0x7f050020;
+        public static final int card1_p0=0x7f050010;
+        public static final int card1_p1=0x7f050016;
+        public static final int card2=0x7f050021;
+        public static final int card2_p0=0x7f050011;
+        public static final int card2_p1=0x7f050017;
+        public static final int card3=0x7f050022;
+        public static final int card3_p0=0x7f050012;
+        public static final int card3_p1=0x7f050018;
+        public static final int card4=0x7f050023;
+        public static final int card4_p0=0x7f050013;
+        public static final int card4_p1=0x7f050019;
+        public static final int card5=0x7f050024;
+        public static final int card5_p0=0x7f050014;
+        public static final int card5_p1=0x7f05001a;
         public static final int current_network=0x7f050000;
-        public static final int deal=0x7f050013;
+        public static final int deal=0x7f05001b;
         public static final int device_list_container=0x7f050002;
         public static final int device_list_scrollview=0x7f050001;
         public static final int discover_users_button=0x7f05000a;
-        public static final int draw=0x7f050016;
-        public static final int fold=0x7f050015;
-        public static final int money=0x7f05000c;
+        public static final int draw=0x7f05001e;
+        public static final int fold=0x7f05001d;
+        public static final int money=0x7f05000d;
         public static final int new_devices=0x7f050006;
+        public static final int p0=0x7f05000f;
+        public static final int p1=0x7f050015;
         public static final int paired_devices=0x7f050004;
-        public static final int phase=0x7f05000d;
-        public static final int play=0x7f05000b;
+        public static final int phase=0x7f05000e;
+        public static final int play=0x7f05000c;
+        public static final int register=0x7f05000b;
+        public static final int splash=0x7f05001f;
         public static final int title_new_devices=0x7f050005;
         public static final int title_paired_devices=0x7f050003;
     }
     public static final class layout {
         public static final int buildnetwork=0x7f030000;
-        public static final int main=0x7f030001;
-        public static final int play_view=0x7f030002;
+        public static final int create_view=0x7f030001;
+        public static final int final_view_four_player=0x7f030002;
+        public static final int final_view_three_player=0x7f030003;
+        public static final int final_view_two_player=0x7f030004;
+        public static final int main=0x7f030005;
+        public static final int play_view=0x7f030006;
     }
     public static final class string {
         public static final int Settings=0x7f040019;
@@ -66,6 +86,7 @@ public final class R {
         public static final int comm_service_label=0x7f040012;
         public static final int comm_service_started=0x7f040013;
         public static final int comm_service_stopped=0x7f040014;
+        public static final int create_game=0x7f040029;
         public static final int deal=0x7f040024;
         public static final int delete_contact=0x7f040009;
         public static final int discover_users=0x7f04001b;
@@ -87,10 +108,16 @@ public final class R {
         public static final int menu_settings=0x7f04000d;
         public static final int none_found=0x7f040020;
         public static final int none_paired=0x7f040021;
+        public static final int p0=0x7f04002b;
+        public static final int p1=0x7f04002c;
+        public static final int p2=0x7f04002d;
+        public static final int p4=0x7f04002e;
         public static final int play_game=0x7f040023;
+        public static final int register=0x7f04002a;
         public static final int scanning=0x7f04001e;
         public static final int select_device=0x7f04001f;
         public static final int select_user=0x7f040008;
+        public static final int send=0x7f040028;
         public static final int tab_devices=0x7f040018;
         /**  HOME 
          */

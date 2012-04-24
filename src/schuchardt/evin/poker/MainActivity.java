@@ -31,7 +31,7 @@ public class MainActivity extends Activity {
 				if(D) Log.d(TAG, "in onClick");
 //				Intent i = new Intent(MainActivity.this, Poker2Activity.class);
 				Intent i = new Intent(MainActivity.this, BuildNetworkActivity.class);
-				//startActivity(i);
+//				startActivity(i);
 				startActivityForResult(i, RESULT_BUILD_NETWORK);
 			}
 		});

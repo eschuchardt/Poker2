@@ -127,6 +127,30 @@
 	        android:text="@string/draw"
 	        android:padding="2dp" />
 	    
-	   </LinearLayout>
-	    
+	</LinearLayout>
+	<!-- 
+	<EditText
+            android:id="@+id/im_text"
+            android:inputType="textMultiLine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" >
+
+	<requestFocus />
+	</EditText>
+
+    <Button
+            android:id="@+id/send_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="sendMessage"
+            android:text="@string/send" />
+	   
+	<ListView
+        android:id="@+id/chat_log"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" >
+    </ListView>
+	 -->
 </LinearLayout>

@@ -5,20 +5,16 @@
     android:orientation="vertical" >
 
     <Button
+            android:id="@+id/register"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/register" />
+    
+    <Button
             android:id="@+id/play"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/create_game" />
-    
-    <TextView
-            android:id="@+id/splash"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/poker_cards_splash"
-            android:gravity="center_vertical|center_horizontal"
-            android:textColor="#ff000000"
-            android:padding="2dp" />
-    
+            android:text="@string/play_game" />
     
     <!-- 
     <TextView

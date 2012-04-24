@@ -8,5 +8,12 @@
     <string name="bid">Bid</string>
     <string name="fold">Fold</string>
     <string name="draw">Draw</string>
+    <string name="send">Send</string>
+    <string name="create_game">Create</string>
+    <string name="register">Click to Register</string>
+    <string name="p0">Player 0</string>
+    <string name="p1">Player 1</string>
+    <string name="p2">Player 3</string>
+    <string name="p4">Player 4</string>
 
 </resources>

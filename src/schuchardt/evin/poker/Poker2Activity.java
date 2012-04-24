@@ -7,31 +7,46 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import ec.nem.bluenet.BluetoothNodeService;
+import ec.nem.bluenet.BluetoothNodeService.LocalBinder;
+import ec.nem.bluenet.Message;
+import ec.nem.bluenet.MessageListener;
+import ec.nem.bluenet.Node;
+import ec.nem.bluenet.NodeListener;
 
-public class Poker2Activity extends Activity {
+public class Poker2Activity extends Activity implements MessageListener, NodeListener {
 	
 	//Debug
 	private final static boolean D = true;
 	private final static String TAG = "Poker2Activity";
 	
 	//TODO: replace this with the actual player number.
-	private static final int PLAYER_NUM = 0;
+	private static int PLAYER_NUM;
 	/*
 	 * This first part is the implementation of poker.
 	 * The second section concerns the android part of the application
@@ -44,6 +59,8 @@ public class Poker2Activity extends Activity {
     private static final int DRAW_PHASE = 2;
     private static final int BET2_PHASE = 3;
     private static final int FINAL_PHASE = 4;
+    
+    private static int layoutID = -1;
     
     //Set truth value
     private static final int FALSE = 0;
@@ -63,6 +80,9 @@ public class Poker2Activity extends Activity {
     
     private static DeckState mDeckState = new DeckState();
     
+    private static int numPlayers = 0; 
+    private static boolean hasRegistered = false;
+    
     //for use in last section
     private static final int CARDS_IN_HAND = 5;
     private static final int CARD1 = 0;
@@ -77,6 +97,13 @@ public class Poker2Activity extends Activity {
     private static final String CHECK_STRING = "Check";
     private static final String CALL_STRING = "Call";
     private static final String RAISE_STRING = "Raise";
+    
+    //Check what color the card is
+    private static boolean card1Red = false;
+    private static boolean card2Red = false;
+    private static boolean card3Red = false;
+    private static boolean card4Red = false;
+    private static boolean card5Red = false;
     
     //Card Value Strings
     private static final String ACE_OF_DIAMONDS = "Ace Dmds";
@@ -478,24 +505,146 @@ public class Poker2Activity extends Activity {
     Button fold;
     Button draw;
     
+    Button play;
+    Button register;
+    
+    TextView card1_p0;
+    TextView card2_p0;
+    TextView card3_p0;
+    TextView card4_p0;
+    TextView card5_p0;
+    
+    TextView card1_p1;
+    TextView card2_p1;
+    TextView card3_p1;
+    TextView card4_p1;
+    TextView card5_p1;
+    
+    TextView card1_p2;
+    TextView card2_p2;
+    TextView card3_p2;
+    TextView card4_p2;
+    TextView card5_p2;
+    
+    TextView card1_p3;
+    TextView card2_p3;
+    TextView card3_p3;
+    TextView card4_p3;
+    TextView card5_p3;
+    
+	/*
+	 * FROM DEMO
+	 */
+    public static final String MESSAGES_KEY = "messages";
+	BluetoothNodeService connectionService;
+	boolean boundToService = false;
+	ArrayAdapter<String> logAdapter;
+	Handler uiHandler;
+	/*
+     * END FROM DEMO
+     */
+	
 	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	if(D) Log.d(TAG, "in onCreate");
         super.onCreate(savedInstanceState);
-        //if(D) Log.d(TAG, "success super.onCreate(savedInstanceState);");
-        setContentView(R.layout.play_view);
-        //if(D) Log.d(TAG, "success setContentView(R.layout.play_view);");
+        setContentView(R.layout.create_view);
+        layoutID = R.layout.create_view;
+        populateCreateFields();
         
         /*
          * TODO: this needs to be done in the create portion of the game.
+         * DO ALL OF THIS IN ONNODEENTER OR AN ACTIVITY BEFORE THIS ONE.  LIKE A POPULATION OF PLAYERS.
          * This should only be done once.
+         * Check how many players are on the network.  Make sure there are no more 4.
+         * Get the ids from each device and assign yourself a number, lowest one gets 0.
+         * Have player 0 initialize the deck.
+         */
+//        String myAddress = connectionService.getLocalNode().getAddress(); //returns bluetooth address.  used for comparison
+//        List<Node> availableNodes = connectionService.getAvailableNodes(); //I don't know if this also returns my own node or not
+////        int networkSize = connectionService.getNetworkSize(); //I'm guessing availableNodes does return yourself because this is the size
+//        PLAYER_NUM = getMyPlayerNumber(myAddress, availableNodes);
+//        if(PLAYER_NUM == 0 && mDeckState == null) {
+//        	mDeckState = new DeckState();
+//        	mDeckState.setNumPlayers(connectionService.getNetworkSize());
+//        	//sendMessage to everyone updating the state of the deck.
+//        }
+        
+        
+        /*
+         * FROM DEMO
+         */
+//        logAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+//        
+//        ListView l = (ListView)findViewById(R.id.chat_log);
+//        l.setAdapter(logAdapter);
+//        
+//        if(savedInstanceState != null){
+//        	ArrayList<String> messages = savedInstanceState.getStringArrayList(MESSAGES_KEY);
+//        	for(String s: messages){
+//        		logAdapter.add(s);
+//        	}
+//        }
+        
+        uiHandler = new Handler();
+        
+        Intent intent = new Intent(this, BluetoothNodeService.class);
+    	bindService(intent, connection, Context.BIND_AUTO_CREATE);
+        /*
+         * END FROM DEMO
          */
         
         
         
-        money = (TextView)findViewById(R.id.money);
+        
+        //assign the values to different views on screen
+//        if(mDeckState != null) { //assign the values to different views on screen
+//        	populatePlayFields();	        
+//    	}
+    }
+    
+    public void populateCreateFields() {
+    	play = (Button)findViewById(R.id.play);
+    	register = (Button)findViewById(R.id.register);
+    	
+    	play.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(hasRegistered) {
+					setContentView(R.layout.play_view);
+					layoutID = R.layout.play_view;
+					populatePlayFields();
+				}
+				else {
+					Context context = getApplicationContext();
+					Toast toast = Toast.makeText(context, "Please Register.", TOAST_DURATION);
+					toast.setGravity(Gravity.BOTTOM, 0, 0);
+					toast.show();
+				}
+			}
+		});
+    	
+    	register.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(!hasRegistered) {
+					numPlayers++;
+					hasRegistered = true;
+					mDeckState.addPlayer();
+					sendMessage();
+				}
+				Context context = getApplicationContext();
+				Toast toast = Toast.makeText(context, "Click play once all have registered.", TOAST_DURATION);
+				toast.setGravity(Gravity.BOTTOM, 0, 0);
+				toast.show();
+			}
+		});
+    }
+    
+    public void populatePlayFields() {
+    	money = (TextView)findViewById(R.id.money);
         phase = (TextView)findViewById(R.id.phase);
         
         card1 = (TextView)findViewById(R.id.card1);
@@ -509,48 +658,43 @@ public class Poker2Activity extends Activity {
         fold = (Button)findViewById(R.id.fold);
         draw = (Button)findViewById(R.id.draw);
         
-        //TODO: figure out how to assign each player a number.
-        money.setText("$" + Integer.toString(mDeckState.getPlayersMoney(PLAYER_NUM)));
-        phase.setText(" :" + mDeckState.getPhaseName() + " Phase");
+    	money.setText("$" + Integer.toString(mDeckState.getPlayersMoney(PLAYER_NUM)));
+    	setPhase();
         
-        if(((DeckState) getLastNonConfigurationInstance()) != null) {
-        	mDeckState = (DeckState)getLastNonConfigurationInstance();
-        }
+//        if(((DeckState) getLastNonConfigurationInstance()) != null) {
+//        	mDeckState = (DeckState)getLastNonConfigurationInstance();
+//        }
         if (mDeckState == null) { //then this is a new game thing
         	//TODO: find someway to handle this
         	//mDeckState = new DeckState();
         }
         else {
-        	if(true/*mDeckState.hasBeenDealt(PLAYER_NUM)*/) { //this player already has a hand
+        	if(mDeckState.hasBeenDealt(PLAYER_NUM)) { //this player already has a hand
         		
         		int[] hand = new int[5];
         		mDeckState.getHand(hand, PLAYER_NUM);
-        		//TODO: REMOVE THIS NEXT LINE
-        		//hand[0] = savedInstanceState.getInt("hand0");
         		
-        		card1.setText(findCardString(hand[0]));
-    			card2.setText(findCardString(hand[1]));
-    			card3.setText(findCardString(hand[2]));
-    			card4.setText(findCardString(hand[3]));
-    			card5.setText(findCardString(hand[4]));
+        		refreshCardsView(hand);
         	}
         }
-        mDeckState.setPhase(FINAL_PHASE);
+        //mDeckState.setPhase(FINAL_PHASE);
         
         
         card1.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if(mDeckState.getPhase() == DRAW_PHASE) {
-					if(card1.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.green_card).getConstantState().hashCode()) { //Crazy set of functions to find a comparison on stroke.  change to red
+					if(!card1Red/*card1.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.green_card).getConstantState().hashCode()*/) { //Crazy set of functions to find a comparison on stroke.  change to red
 						//if(D) Log.d(TAG, "if1");
 						//TODO: put this in the cards to be drawn
-						card1.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_card));
+						//card1.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_card));
+						card1Red = setCardColor(card1, card1Red, true);
 						//if(D) Log.d(TAG, "card1.setBG");
 					}
 					else { //change to green
 						//TODO: take this out of the cards to be drawn
-						card1.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
+						//card1.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
+						card1Red = setCardColor(card1, card1Red, false);
 					}
 				}
 			}
@@ -559,15 +703,17 @@ public class Poker2Activity extends Activity {
 			@Override
 			public void onClick(View v) {
 				if(mDeckState.getPhase() == DRAW_PHASE) {
-					if(card2.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.green_card).getConstantState().hashCode()) { //Crazy set of functions to find a comparison on stroke.  change to red
+					if(!card2Red/*card2.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.green_card).getConstantState().hashCode()*/) { //Crazy set of functions to find a comparison on stroke.  change to red
 						//if(D) Log.d(TAG, "if1");
 						//TODO: put this in the cards to be drawn
-						card2.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_card));
+						//card2.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_card));
+						card2Red = setCardColor(card2, card2Red, true);
 						//if(D) Log.d(TAG, "card1.setBG");
 					}
 					else { //change to green
 						//TODO: take this out of the cards to be drawn
-						card2.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
+						//card2.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
+						card2Red = setCardColor(card2, card2Red, false);
 					}
 				}
 			}
@@ -576,15 +722,17 @@ public class Poker2Activity extends Activity {
 			@Override
 			public void onClick(View v) {
 				if(mDeckState.getPhase() == DRAW_PHASE) {
-					if(card3.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.green_card).getConstantState().hashCode()) { //Crazy set of functions to find a comparison on stroke.  change to red
+					if(!card3Red/*card3.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.green_card).getConstantState().hashCode()*/) { //Crazy set of functions to find a comparison on stroke.  change to red
 						//if(D) Log.d(TAG, "if1");
 						//TODO: put this in the cards to be drawn
-						card3.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_card));
+						//card3.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_card));
+						card3Red = setCardColor(card3, card3Red, true);
 						//if(D) Log.d(TAG, "card1.setBG");
 					}
 					else { //change to green
 						//TODO: take this out of the cards to be drawn
-						card3.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
+						//card3.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
+						card3Red = setCardColor(card3, card3Red, false);
 					}
 				}
 			}
@@ -593,15 +741,17 @@ public class Poker2Activity extends Activity {
 			@Override
 			public void onClick(View v) {
 				if(mDeckState.getPhase() == DRAW_PHASE) {
-					if(card4.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.green_card).getConstantState().hashCode()) { //Crazy set of functions to find a comparison on stroke.  change to red
+					if(!card4Red/*card4.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.green_card).getConstantState().hashCode()*/) { //Crazy set of functions to find a comparison on stroke.  change to red
 						//if(D) Log.d(TAG, "if1");
 						//TODO: put this in the cards to be drawn
-						card4.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_card));
+						//card4.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_card));
+						card4Red = setCardColor(card4, card4Red, true);
 						//if(D) Log.d(TAG, "card1.setBG");
 					}
 					else { //change to green
 						//TODO: take this out of the cards to be drawn
-						card4.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
+						//card4.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
+						card4Red = setCardColor(card4, card4Red, false);
 					}
 				}
 			}
@@ -610,15 +760,17 @@ public class Poker2Activity extends Activity {
 			@Override
 			public void onClick(View v) {
 				if(mDeckState.getPhase() == DRAW_PHASE) {
-					if(card5.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.green_card).getConstantState().hashCode()) { //Crazy set of functions to find a comparison on stroke.  change to red
+					if(!card5Red/*card5.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.green_card).getConstantState().hashCode()*/) { //Crazy set of functions to find a comparison on stroke.  change to red
 						//if(D) Log.d(TAG, "if1");
 						//TODO: put this in the cards to be drawn
-						card5.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_card));
+						//card5.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_card));
+						card5Red = setCardColor(card5, card5Red, true);
 						//if(D) Log.d(TAG, "card1.setBG");
 					}
 					else { //change to green
 						//TODO: take this out of the cards to be drawn
-						card5.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
+						//card5.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
+						card5Red = setCardColor(card5, card5Red, false);
 					}
 				}
 			}
@@ -627,29 +779,7 @@ public class Poker2Activity extends Activity {
         deal.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				//TODO: make sure that only one person presses this??
-				if(mDeckState.getPhase() == FINAL_PHASE) {
-					//TODO: action for dealing
-					if(mDeckState.getPlayerUpdate(PLAYER_NUM) == FALSE) {
-						int[] hand = new int[CARDS_IN_HAND];
-		    			mDeckState.dealCards(hand, mDeckState.getUsedCards(), PLAYER_NUM); //Only deal to that player
-		    		
-		    			//Refresh the cards and have them appear on the text view.
-		    			card1.setText(findCardString(hand[0]));
-		    			card2.setText(findCardString(hand[1]));
-		    			card3.setText(findCardString(hand[2]));
-		    			card4.setText(findCardString(hand[3]));
-		    			card5.setText(findCardString(hand[4]));
-		    			
-					}
-				}
-				else {
-					//TODO: make toast or something saying you can't click that yet.
-					Context context = getApplicationContext();
-					Toast toast = Toast.makeText(context, "Invalid click: current phase is " + mDeckState.getPhase(), TOAST_DURATION);
-					toast.setGravity(Gravity.BOTTOM, 0, 0);
-					toast.show();
-				}
+				setDealOnClick();
 			}
 		}); 
         
@@ -664,6 +794,8 @@ public class Poker2Activity extends Activity {
 						//if bid is good, set flag to false
 	    				mDeckState.setPlayerState(FOLD, PLAYER_NUM);
 	    				mDeckState.setPlayerUpdate(PLAYER_NUM, TRUE);
+	    				
+	    				sendMessage();
 					}
 					else {
 						//TODO: toast to the fact that they need to hold their horses until the other players do their thing
@@ -697,27 +829,30 @@ public class Poker2Activity extends Activity {
 							 * TODO: mutex on resources here.  Need to wait till this person's turn,
 							 * or at least a lull in the network so that the update of usedCards does not mess up
 							 */
-							if(card1.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.red_card).getConstantState().hashCode()); {//check to see if the card is red
+							if(card1Red == true) {//check to see if the card is red
 								hand[CARD1] = mDeckState.getRandomCard(mDeckState.getUsedCards(), hand); //insert random number into local hand, but not into usedCards or playersCards
 				    			mDeckState.setUsedCard(hand[CARD1]); //insert new number into usedCards
 							}
-							if(card2.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.red_card).getConstantState().hashCode()); {//check to see if the card is red
+							if(card2Red == true) {//check to see if the card is red
 								hand[CARD2] = mDeckState.getRandomCard(mDeckState.getUsedCards(), hand); //insert random number into local hand, but not into usedCards or playersCards
 				    			mDeckState.setUsedCard(hand[CARD2]); //insert new number into usedCards
 							}
-							if(card3.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.red_card).getConstantState().hashCode()); {//check to see if the card is red
+							if(card3Red == true) {//check to see if the card is red
 								hand[CARD3] = mDeckState.getRandomCard(mDeckState.getUsedCards(), hand); //insert random number into local hand, but not into usedCards or playersCards
 				    			mDeckState.setUsedCard(hand[CARD3]); //insert new number into usedCards
 							}
-							if(card4.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.red_card).getConstantState().hashCode()); {//check to see if the card is red
+							if(card4Red == true) {//check to see if the card is red
 								hand[CARD4] = mDeckState.getRandomCard(mDeckState.getUsedCards(), hand); //insert random number into local hand, but not into usedCards or playersCards
 				    			mDeckState.setUsedCard(hand[CARD4]); //insert new number into usedCards
 							}
-							if(card5.getBackground().getConstantState().hashCode() == getResources().getDrawable(R.drawable.red_card).getConstantState().hashCode()); {//check to see if the card is red
+							if(card5Red == true) {//check to see if the card is red
 								hand[CARD5] = mDeckState.getRandomCard(mDeckState.getUsedCards(), hand); //insert random number into local hand, but not into usedCards or playersCards
 				    			mDeckState.setUsedCard(hand[CARD5]); //insert new number into usedCards
 							}
 							mDeckState.setPlayersCards(hand, PLAYER_NUM); //replace cards in deckstate
+							
+							refreshCardsView(hand);
+							resetCardColor();
 							
 				    		//update player
 				    		mDeckState.setPlayerUpdate(PLAYER_NUM, TRUE);
@@ -727,6 +862,9 @@ public class Poker2Activity extends Activity {
 				    			mDeckState.setPhase(BET2_PHASE);
 				    			mDeckState.initPlayerUpdate();
 				    		}
+				    		
+				    		setPhase();
+				    		sendMessage();
 						}
 					}
 					else {
@@ -742,6 +880,91 @@ public class Poker2Activity extends Activity {
 		});
     }
     
+    public void setDealOnClick() {
+		//TODO: make sure that only one person presses this??
+		if(mDeckState.getPhase() == DEAL_PHASE) {
+			
+			/*
+			 * Check to see if the layout view is correct
+			 * TODO: if this is the case, the hands must be reset
+			 * along with the usedCards
+			 */
+			if(layoutID != R.layout.play_view) {
+				setContentView(R.layout.play_view);
+				layoutID = R.layout.play_view;
+				populatePlayFields();
+				
+				if(PLAYER_NUM == 0) {
+					mDeckState.initPlayersFinalHand();
+					mDeckState.initPlayersCards();
+					mDeckState.initPlayerState();
+					mDeckState.initUsedCards();
+					mDeckState.initPlayerUpdate();
+				}
+			}
+			
+			//TODO: action for dealing
+			if(mDeckState.getPlayerUpdate(PLAYER_NUM) == FALSE) {
+				int[] hand = new int[CARDS_IN_HAND];
+    			mDeckState.dealCards(hand, mDeckState.getUsedCards(), PLAYER_NUM); //Only deal to that player
+    			mDeckState.setPlayerUpdate(PLAYER_NUM, TRUE);
+    			
+    			//Refresh the cards and have them appear on the text view.
+    			refreshCardsView(hand);
+    			
+    			if(mDeckState.isUpdated()) {
+        			mDeckState.setPhase(BET1_PHASE);
+        			mDeckState.initPlayerUpdate();
+        		}
+    			
+    			sendMessage();
+    			setPhase();
+			}
+			else {
+				Context context = getApplicationContext();
+				Toast toast = Toast.makeText(context, "Wait for others to deal." + mDeckState.getPhaseName(), TOAST_DURATION);
+				toast.setGravity(Gravity.BOTTOM, 0, 0);
+				toast.show();
+			}
+			
+			sendMessage();
+		}
+		else {
+			//TODO: make toast or something saying you can't click that yet.
+			Context context = getApplicationContext();
+			Toast toast = Toast.makeText(context, "Invalid click: current phase is " + mDeckState.getPhaseName(), TOAST_DURATION);
+			toast.setGravity(Gravity.BOTTOM, 0, 0);
+			toast.show();
+		}
+    }
+    
+    public boolean setCardColor(TextView card, boolean cardBool, boolean value) {
+    	if(cardBool == false) { //card should be green
+    		card.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_card));
+    	}
+    	else {
+    		card.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
+    	}
+    	return value;
+    }
+    
+    public void refreshCardsView(int[] hand) {
+    	//Refresh the cards and have them appear on the text view.
+    	card1.setText(findCardString(hand[0]));
+		card2.setText(findCardString(hand[1]));
+		card3.setText(findCardString(hand[2]));
+		card4.setText(findCardString(hand[3]));
+		card5.setText(findCardString(hand[4]));
+    }
+    
+    public void resetCardColor() {
+    	card1.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
+    	card2.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
+    	card3.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
+    	card4.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
+    	card5.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
+    }
+
     @Override  
     public void onCreateContextMenu(ContextMenu menu, View v,ContextMenuInfo menuInfo) {  
     	super.onCreateContextMenu(menu, v, menuInfo);  
@@ -766,6 +989,7 @@ public class Poker2Activity extends Activity {
     				if(mDeckState.checkGoodCheck(playerBid)) {
     					mDeckState.setCurrentBid(playerBid);
     					mDeckState.setPlayerUpdate(PLAYER_NUM, TRUE);
+    					setPhase();
     				}
     				else {
     					Context context = getApplicationContext();
@@ -786,6 +1010,7 @@ public class Poker2Activity extends Activity {
 	    					mDeckState.bidMoney(playerBid, PLAYER_NUM); //subtract this from his total money 
 	    					mDeckState.setPlayersBids(playerBid, PLAYER_NUM);
 	    					mDeckState.setPlayerUpdate(PLAYER_NUM, TRUE);
+	    					money.setText("$" + Integer.toString(mDeckState.getPlayersMoney(PLAYER_NUM)));
 	    				}
 	    				else {
 	    					Context context = getApplicationContext();
@@ -818,6 +1043,27 @@ public class Poker2Activity extends Activity {
 				    					mDeckState.setPlayersBids(playerBid, PLAYER_NUM);
 				    					mDeckState.setCurrentBid(playerBid);
 				    					mDeckState.setPlayerUpdateAndClear(PLAYER_NUM, TRUE);
+				    					
+				    					//check to see if all players involved have finished this phase
+				    					
+				    					if(mDeckState.isUpdated()) {
+				    						if(mDeckState.getPhase() == BET1_PHASE) {
+				    							mDeckState.setPhase(DRAW_PHASE);
+				    						}
+				    						else {
+				    							mDeckState.setPhase(FINAL_PHASE);
+				    						}
+				    		    			mDeckState.initPlayerUpdate();
+				    		    			setPhase();
+				    		    		}
+				    					
+				    					//check to see if there are still more than one player who has not folded.
+				    					//if there is not, set state to FINAL_PHASE
+//				    					if(!mDeckState.checkPlayerState()) {
+//				    						mDeckState.setPhase(FINAL_PHASE);
+//				    					}
+				    					money.setText("$" + Integer.toString(mDeckState.getPlayersMoney(PLAYER_NUM)));
+				    					sendMessage();
 				    				}
 				    				else {
 				    					Context context = getApplicationContext();
@@ -839,17 +1085,29 @@ public class Poker2Activity extends Activity {
 		        		else {return false;}  
 		        	}
 		        }
-		        //check to see if all players involved have finished this phase
+				//check to see if all players involved have finished this phase
 				if(mDeckState.isUpdated()) {
-	    			mDeckState.setPhase(DRAW_PHASE);
+					if(mDeckState.getPhase() == BET1_PHASE) {
+						mDeckState.setPhase(DRAW_PHASE);
+					}
+					else {
+						mDeckState.setPhase(FINAL_PHASE);
+					}
 	    			mDeckState.initPlayerUpdate();
+	    			setPhase();
+	    			
 	    		}
 				
-	    		//check to see if there are still more than one player who has not folded.
-				//if there is not, set state to FINAL_PHASE
-				if(!mDeckState.checkPlayerState()) {
-					mDeckState.setPhase(FINAL_PHASE);
+				//check to see if there are still more than one player who has not folded.
+				//TODO: hack for testing
+				if(mDeckState.getNumPlayers() > 1) {
+					if(!mDeckState.checkPlayerState()) {
+						mDeckState.setPhase(FINAL_PHASE);
+						setPhase();
+					}
 				}
+				sendMessage();
+	    		
 			}
         	else {
 				//TODO: toast to the fact that they need to hold their horses until the other players do their thing
@@ -864,18 +1122,269 @@ public class Poker2Activity extends Activity {
     return true;  
     }  
     
-    @Override
-    public Object onRetainNonConfigurationInstance() {
-        final DeckState state = Poker2Activity.mDeckState;
-        return state;
+    /**
+     * Sets the phase and checks to see if the phase is final. 
+     * If it is final, display the winner and all the hands on the screen.
+     * Then have some sort of refresh button to continue to Deal_Phase again.
+     */
+    public void setPhase() {
+    	int mmPhase = mDeckState.getPhase();
+    	phase.setText(" :" + mDeckState.getPhaseName() + " Phase");
+    	if(mmPhase == FINAL_PHASE) {
+    		switch(mDeckState.getNumPlayers()) {
+    		case 1: //TODO: hack to test one player
+    			setContentView(R.layout.final_view_two_player);
+    			layoutID = R.layout.final_view_two_player;
+    			populateTwoPlayer();
+    			break;
+    		case 2:
+    			setContentView(R.layout.final_view_two_player);
+    			layoutID = R.layout.final_view_two_player;
+    			populateTwoPlayer();
+    			break;
+    		case 3:
+    			setContentView(R.layout.final_view_three_player);
+    			layoutID = R.layout.final_view_three_player;
+//    			populateThreePlayer();
+    			break;
+    		case 4:
+    			setContentView(R.layout.final_view_four_player);
+    			layoutID = R.layout.final_view_four_player;
+//    			populateFourPlayer();
+    			break;
+			default: 
+				break;
+    		}
+    	}
+    	Context context = getApplicationContext();
+		Toast toast = Toast.makeText(context, mDeckState.getPhaseName(), 1000);
+		toast.setGravity(Gravity.BOTTOM, 0, 0);
+		toast.show();
     }
     
+    public void populateTwoPlayer() {
+    	money = (TextView)findViewById(R.id.money);
+        phase = (TextView)findViewById(R.id.phase);
+        
+        card1_p0 = (TextView)findViewById(R.id.card1_p0);
+        card2_p0 = (TextView)findViewById(R.id.card2_p0);
+        card3_p0 = (TextView)findViewById(R.id.card3_p0);
+        card4_p0 = (TextView)findViewById(R.id.card4_p0);
+        card5_p0 = (TextView)findViewById(R.id.card5_p0);
+        
+        card1_p1 = (TextView)findViewById(R.id.card1_p1);
+        card2_p1 = (TextView)findViewById(R.id.card2_p1);
+        card3_p1 = (TextView)findViewById(R.id.card3_p1);
+        card4_p1 = (TextView)findViewById(R.id.card4_p1);
+        card5_p1 = (TextView)findViewById(R.id.card5_p1);
+        
+        deal = (Button)findViewById(R.id.deal);
+        bid = (Button)findViewById(R.id.bid);
+        fold = (Button)findViewById(R.id.fold);
+        draw = (Button)findViewById(R.id.draw);
+        
+        mDeckState.setPhase(DEAL_PHASE);
+        
+    	money.setText("$" + Integer.toString(mDeckState.getPlayersMoney(PLAYER_NUM)));
+    	setPhase();
+        
+        deal.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				setDealOnClick();
+			}
+		}); 
+        
+        
+    }
+    
+//    public void populateThreePlayer() {
+//    	
+//    	populateTwoPlayer();
+//        
+//        card1_p2 = (TextView)findViewById(R.id.card1_p2);
+//        card2_p2 = (TextView)findViewById(R.id.card2_p2);
+//        card3_p2 = (TextView)findViewById(R.id.card3_p2);
+//        card4_p2 = (TextView)findViewById(R.id.card4_p2);
+//        card5_p2 = (TextView)findViewById(R.id.card5_p2);
+//    }
+//    
+//    public void populateFourPlayer() {
+//    	
+//    	populateTwoPlayer();
+//        
+//        card1_p3 = (TextView)findViewById(R.id.card1_p3);
+//        card2_p3 = (TextView)findViewById(R.id.card2_p3);
+//        card3_p3 = (TextView)findViewById(R.id.card3_p3);
+//        card4_p3 = (TextView)findViewById(R.id.card4_p3);
+//        card5_p3 = (TextView)findViewById(R.id.card5_p3);
+//    }
+    
+//    @Override
+//    public Object onRetainNonConfigurationInstance() {
+//        final DeckState state = Poker2Activity.mDeckState;
+//        return state;
+//    }
+    
+    /*
+     * FROM DEMO
+     */
     @Override
-    protected void onSaveInstanceState(Bundle savedInstanceState) {
-    	savedInstanceState.putInt("hand0", mDeckState.getPlayersCards()[0]);
+	public void onDestroy(){
+		super.onDestroy();
+		// MAKE SURE YOU REMOVE YOURSELF FROM THE LISTENER LIST
+		// OTHERWISE YOU WILL LEAK MEMORY
+		if(connectionService != null){
+			connectionService.removeMessageListener(this);
+			connectionService.removeNodeListener(this);
+		}
+		unbindService(connection);
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState){
+		//begin deserialize and receive
+    	//DeckState newDeckState = new DeckState();
+    	try {
+    		savedInstanceState.putByteArray("state", serialize(mDeckState));
+    	} 
+    	//TODO: CATCH EXCEPTIONS
+    	catch (IOException e) {/*System.out.println("IOException");*/} 
+    	//end deserialize and receive
+    	
     	super.onSaveInstanceState(savedInstanceState);
+//		ArrayList<String> backup = new ArrayList<String>();
+//		for(int x = 0; x < logAdapter.getCount(); x++){
+//			backup.add(logAdapter.getItem(x));
+//		}
+//		b.putStringArrayList(MESSAGES_KEY, backup);
+	}
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+    	super.onRestoreInstanceState(savedInstanceState);
+    	//begin deserialize and receive
+    	//DeckState newDeckState = new DeckState();
+    	try {
+    		mDeckState = (DeckState)deserialize(savedInstanceState.getByteArray("state"));
+    	} 
+    	//TODO: CATCH EXCEPTIONS
+    	catch (IOException e) {/*System.out.println("IOException");*/} catch (ClassNotFoundException e) {/*System.out.println("ClassNotFoundException");*/}
+    	//end deserialize and receive
+    	
+    	
+    	
     }
+    @Override
+    public void onPause() {
+    	super.onPause();
+    }
+    @Override
+    public void onResume() {
+    	super.onResume();
+    }
+	
+	private ServiceConnection connection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            LocalBinder binder = (LocalBinder) service;
+            connectionService = binder.getService();
+            connectionService.addMessageListener(Poker2Activity.this);
+            connectionService.addNodeListener(Poker2Activity.this);
+            boundToService = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            boundToService = false;
+        }
+    };
+
+    /**
+     * Put into a list the Nodes or addresses of each device.  Remove in onNodeExit
+     */
+	@Override
+	public void onNodeEnter(String node) {
+		
+//		final String txt = node;
+		uiHandler.post(new Runnable() {
+			@Override
+			public void run() {
+				Context context = getApplicationContext();
+				Toast toast = Toast.makeText(context, "Someone entered the session.", 1000);
+				toast.setGravity(Gravity.BOTTOM, 0, 0);
+				toast.show();
+//				logAdapter.add("Node " + txt + " has Connected to us.");
+//				logAdapter.notifyDataSetChanged();
+			}
+		});
+	}
+
+	/**
+	 * Remove from list the Nodes or addresses of each device that leaves the network.
+	 */
+	@Override
+	public void onNodeExit(String node) {
+//		final String txt = node;
+		uiHandler.post(new Runnable() {
+			@Override
+			public void run() {
+				Context context = getApplicationContext();
+				Toast toast = Toast.makeText(context, "Someone entered the session.", 1000);
+				toast.setGravity(Gravity.BOTTOM, 0, 0);
+				toast.show();
+//				logAdapter.add("Node " + txt + " has disconnected from us.");
+//				logAdapter.notifyDataSetChanged();
+			}
+		});
+	}
+
+	/**
+	 * Check to see that it is actually a part of my application. 
+	 * Use a specific number to recognize that in the message.
+	 */
+	@Override
+	public void onMessageReceived(Message message) {
+//		final String from = message.getTransmitterName();
+//		final String text = message.getText();
+		mDeckState = (DeckState)message.getData();
+		
+		uiHandler.post(new Runnable() {
+			@Override
+			public void run() {
+				//TODO: call the interpretation function here
+//				logAdapter.add(from + ": " + text);
+//				logAdapter.notifyDataSetChanged();
+			}
+		});
+	}
+	
+	public void sendMessage(){
+//		TextView entry = (TextView)findViewById(R.id.im_text);
+//		String message = entry.getText().toString();
+//		if(message.length() > 0){
+//			connectionService.broadcastMessage(message);
+//			entry.setText("");
+//			
+//			logAdapter.add("Me: " + message);
+//			logAdapter.notifyDataSetChanged();
+//		}
+		connectionService.broadcastMessage(mDeckState);
+	}
+	/*
+     * END FROM DEMO
+     */
    
-    
+    private int getMyPlayerNumber(String myAddress, List<Node> availableNodes) {
+    	int playerNum = 0;
+    	for(Node n : availableNodes){
+    		if(myAddress.compareTo(n.getAddress()) > 0) { //myAddress is greater than other address
+    			playerNum++;
+    		}
+    	}
+    	return playerNum;
+    }
     
 }

@@ -80,7 +80,7 @@ public class DeckState {
 	 * Constructor
 	 */
 	DeckState() {
-		//deck = new int[52];
+		numPlayers = 0;
 		pot = 0;
 		currentBid = 0;
 		playersFinalHand = new int[4];
@@ -100,9 +100,7 @@ public class DeckState {
 		for(int i=0; i<playersMoney.length; i++) {
 			playersMoney[i]= 200;
 		}
-		//for(int i=0; i<52; i++) {
-		//	deck[i] = i;
-		//}
+		setPhase(DEAL_PHASE);
 	}
 	
 	public void initPlayersFinalHand() {
@@ -352,6 +350,9 @@ public class DeckState {
 		return usedCards;
 	}
 	
+	public void addPlayer() {
+		numPlayers++;
+	}
 	public void setNumPlayers(int players) {
 		numPlayers = players;
 	}
