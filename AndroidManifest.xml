@@ -7,22 +7,26 @@
     <uses-sdk android:minSdkVersion="10" />
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:icon="@drawable/poker_ic_launcher"
         android:label="@string/app_name" >
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Poker2Activity"></activity>
+        <activity android:name=".Poker2Activity"
+            android:screenOrientation="portrait" />
         <service android:name="ec.nem.bluenet.BluetoothNodeService" />
-        <activity android:name="ec.nem.bluenet.BuildNetworkActivity" />
+        <activity android:name="ec.nem.bluenet.BuildNetworkActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

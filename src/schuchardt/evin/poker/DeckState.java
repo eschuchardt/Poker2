@@ -1,11 +1,19 @@
 package schuchardt.evin.poker;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Random;
 
-public class DeckState {
+public class DeckState implements Serializable {
 	/*
 	 * diamonds, clubs, hearts, spades
 	 */
+	public static final int ID = 13375;
+	
 	private static final int FOLD = 0;
 	private static final int STAY = 1;
 	
@@ -22,6 +30,16 @@ public class DeckState {
 	private static final int FLUSH = 6;
 	private static final int FULL_HOUSE = 7;
 	private static final int STRAIGHT_FLUSH = 8;
+	
+	private static final String CARD_HIGH_STRING = "nothing";
+	private static final String PAIR_STRING = "a pair";
+	private static final String TWO_PAIR_STRING = "two pair";
+	private static final String THREE_OF_A_KIND_STRING = "three of a kind";
+	private static final String FOUR_OF_A_KIND_STRING = "four of a kind";
+	private static final String STRAIGHT_STRING = "a straight";
+	private static final String FLUSH_STRING = "a flush";
+	private static final String FULL_HOUSE_STRING = "a full house";
+	private static final String STRAIGHT_FLUSH_STRING = "a straight flush";
 	
 	private static final int CARDS_PER_SUIT = 13;
 	
@@ -73,6 +91,8 @@ public class DeckState {
 	int winningHand;
 	int winningPlayer;
 	Random ranGen = new Random();
+	boolean newDeck;
+	boolean finalStateHasBeenSet;
 	
 	
 	
@@ -81,7 +101,7 @@ public class DeckState {
 	 */
 	DeckState() {
 		numPlayers = 0;
-		pot = 0;
+		initPot();
 		currentBid = 0;
 		playersFinalHand = new int[4];
 		initPlayersFinalHand();
@@ -100,19 +120,40 @@ public class DeckState {
 		for(int i=0; i<playersMoney.length; i++) {
 			playersMoney[i]= 200;
 		}
+		setNewDeck(true);
 		setPhase(DEAL_PHASE);
+		initFinalState();
+	}
+	
+	public boolean isNewDeck() {
+		return newDeck;
+	}
+	public void setNewDeck(boolean bool) {
+		newDeck = bool;
+	}
+	
+	public void initCurrentBid() {
+		currentBid = 0;
+	}
+	
+	public void initWinners() {
+		winningPlayer = -1;
+		winningHand = -1;
+		
 	}
 	
 	public void initPlayersFinalHand() {
 		for(int i=0; i<playersFinalHand.length; i++) {
 			playersFinalHand[i] = 0;
 		}
+		
 	}
 	
 	public void initPlayersCards() {
 		for(int i=0; i<playersCards.length; i++) {
 			playersCards[i] = 52;
 		}
+		//setNewDeck(false);
 	}
 	
 	public void initPlayerState() {
@@ -424,6 +465,9 @@ public class DeckState {
 	public void setPot(int bid) {
 		pot = bid;
 	}
+	public void initPot() {
+		pot = 0;
+	}
 	
 	public void setPlayersBids(int bid, int playerNum) {
 		playersBids[playerNum] = bid;
@@ -507,7 +551,7 @@ public class DeckState {
 		
 		bubbleSort(playersSorted);
 		//see if more than one person has a winning hand
-		int winningHand = playersSorted[3];
+		int winningHand = playersSorted[numPlayers-1];
 		int count = 0; //how many others have this hand
 		for(int i=numPlayers-2; i>=0; i--) { //start with the second highest hand
 			if(playersSorted[i] == winningHand) {
@@ -524,10 +568,35 @@ public class DeckState {
 				}
 			}
 		}
-		else { //TODO: THERE IS MORE THAN ONE WINNER
-			
+		else { //TODO: THERE IS MORE THAN ONE WINNER.  Hack - just guess that it is player 0
+			setWinningPlayer(0);
 		}
-		
+	}
+	
+	public void initFinalState() {
+		finalStateHasBeenSet = false;
+	}
+	public void setFinalState() {
+		if(!finalStateHasBeenSet) {
+			calcWinningHand();
+			distributeWinnings(winningPlayer);
+			finalStateHasBeenSet = true;
+		}
+	}
+	
+	public String getWinningHandString() {
+		switch(winningHand) {
+		case CARD_HIGH: return CARD_HIGH_STRING;
+		case PAIR: return PAIR_STRING;
+		case TWO_PAIR: return TWO_PAIR_STRING;
+		case THREE_OF_A_KIND: return THREE_OF_A_KIND_STRING;
+		case FOUR_OF_A_KIND: return FOUR_OF_A_KIND_STRING;
+		case STRAIGHT: return STRAIGHT_STRING;
+		case FLUSH: return FLUSH_STRING;
+		case FULL_HOUSE: return FULL_HOUSE_STRING;
+		case STRAIGHT_FLUSH: return STRAIGHT_FLUSH_STRING;
+		default: return "???";
+		}
 	}
 	public int getWinningHand() {
 		return winningHand;
@@ -712,5 +781,38 @@ public class DeckState {
 				}
 			}
 		}		
+	}
+	
+	public static byte[] serialize(DeckState message) {
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		try {
+			ObjectOutputStream oos = new ObjectOutputStream(bos);
+			oos.writeObject(message);
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		return bos.toByteArray();
+	}
+	
+	public static DeckState deserialize(byte[] messageData) {
+		DeckState message = null;
+		ObjectInputStream ois;
+		try {
+			ois = new ObjectInputStream(new ByteArrayInputStream(messageData));
+			Object obj = ois.readObject();
+			if(obj instanceof DeckState) {
+				message = (DeckState) obj;
+			}
+		}
+		catch(IOException e1) {
+			e1.printStackTrace();
+		}
+		catch(ClassNotFoundException e2) {
+			e2.printStackTrace();
+		}
+		
+		return message;
 	}
 }

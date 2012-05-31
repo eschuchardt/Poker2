@@ -39,10 +39,12 @@ public class MainActivity extends Activity {
     
     @Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data){
+    	if(D) Log.d(TAG, "in onActivityResult");
 		super.onActivityResult(requestCode, resultCode, data);
 		if(requestCode == RESULT_BUILD_NETWORK){
 			if(resultCode == RESULT_OK){
 				Intent intent = new Intent(this, Poker2Activity.class);
+				if(D) Log.d(TAG, "Starting Poker2Activity.");
 				startActivity(intent);
 			}
 			else if(resultCode == RESULT_CANCELED){

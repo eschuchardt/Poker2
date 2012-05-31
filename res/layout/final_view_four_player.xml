@@ -1,8 +1,343 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
     
+     <!-- 
+	    <TextView
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:text="@string/app_name" />
+	-->
+	
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="horizontal" >
+    
+        <TextView
+            android:id="@+id/money"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="2dp" />
+
+	    <TextView
+	        android:id="@+id/phase"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:padding="2dp" />
+
+	</LinearLayout>
+	
+	<TextView
+	        android:id="@+id/p0"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/p0"
+	        android:padding="2dp" />
+		
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:gravity="center_horizontal"
+	    android:orientation="horizontal" >
+    
+        <TextView
+            android:id="@+id/card1_p0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/small_card"
+            android:gravity="center_vertical|center_horizontal"
+            android:textColor="#ff000000"
+            android:padding="2dp" />
+
+	    <TextView
+	        android:id="@+id/card2_p0"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/small_card"
+	        android:gravity="center_vertical|center_horizontal"
+	        android:textColor="#ff000000"
+	        android:padding="2dp" />
+	    
+	    <TextView
+            android:id="@+id/card3_p0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/small_card"
+            android:gravity="center_vertical|center_horizontal"
+            android:textColor="#ff000000"
+            android:padding="2dp" />
+
+	    <TextView
+	        android:id="@+id/card4_p0"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/small_card"
+	        android:gravity="center_vertical|center_horizontal"
+	        android:textColor="#ff000000"
+	        android:padding="2dp" />
+	    
+	    <TextView
+	        android:id="@+id/card5_p0"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/small_card"
+	        android:gravity="center_vertical|center_horizontal"
+	        android:textColor="#ff000000"
+	        android:padding="2dp" />
+
+	</LinearLayout>
+	
+    <TextView
+	        android:id="@+id/p1"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/p1"
+	        android:padding="2dp" />
+	
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:gravity="center_horizontal"
+	    android:orientation="horizontal" >
+    
+        <TextView
+            android:id="@+id/card1_p1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/small_card"
+            android:gravity="center_vertical|center_horizontal"
+            android:textColor="#ff000000"
+            android:padding="2dp" />
+
+	    <TextView
+	        android:id="@+id/card2_p1"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/small_card"
+	        android:gravity="center_vertical|center_horizontal"
+	        android:textColor="#ff000000"
+	        android:padding="2dp" />
+	    
+	    <TextView
+            android:id="@+id/card3_p1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/small_card"
+            android:gravity="center_vertical|center_horizontal"
+            android:textColor="#ff000000"
+            android:padding="2dp" />
+
+	    <TextView
+	        android:id="@+id/card4_p1"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/small_card"
+	        android:gravity="center_vertical|center_horizontal"
+	        android:textColor="#ff000000"
+	        android:padding="2dp" />
+	    
+	    <TextView
+	        android:id="@+id/card5_p1"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/small_card"
+	        android:gravity="center_vertical|center_horizontal"
+	        android:textColor="#ff000000"
+	        android:padding="2dp" />
+
+	</LinearLayout>
+	
+    <TextView
+	        android:id="@+id/p2"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/p2"
+	        android:padding="2dp" />
+	
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:gravity="center_horizontal"
+	    android:orientation="horizontal" >
+    
+        <TextView
+            android:id="@+id/card1_p2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/small_card"
+            android:gravity="center_vertical|center_horizontal"
+            android:textColor="#ff000000"
+            android:padding="2dp" />
+
+	    <TextView
+	        android:id="@+id/card2_p2"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/small_card"
+	        android:gravity="center_vertical|center_horizontal"
+	        android:textColor="#ff000000"
+	        android:padding="2dp" />
+	    
+	    <TextView
+            android:id="@+id/card3_p2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/small_card"
+            android:gravity="center_vertical|center_horizontal"
+            android:textColor="#ff000000"
+            android:padding="2dp" />
+
+	    <TextView
+	        android:id="@+id/card4_p2"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/small_card"
+	        android:gravity="center_vertical|center_horizontal"
+	        android:textColor="#ff000000"
+	        android:padding="2dp" />
+	    
+	    <TextView
+	        android:id="@+id/card5_p2"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/small_card"
+	        android:gravity="center_vertical|center_horizontal"
+	        android:textColor="#ff000000"
+	        android:padding="2dp" />
+
+	</LinearLayout>
+	
+    <TextView
+	        android:id="@+id/p3"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/p3"
+	        android:padding="2dp" />
+	
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:gravity="center_horizontal"
+	    android:orientation="horizontal" >
+    
+        <TextView
+            android:id="@+id/card1_p3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/small_card"
+            android:gravity="center_vertical|center_horizontal"
+            android:textColor="#ff000000"
+            android:padding="2dp" />
+
+	    <TextView
+	        android:id="@+id/card2_p3"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/small_card"
+	        android:gravity="center_vertical|center_horizontal"
+	        android:textColor="#ff000000"
+	        android:padding="2dp" />
+	    
+	    <TextView
+            android:id="@+id/card3_p3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/small_card"
+            android:gravity="center_vertical|center_horizontal"
+            android:textColor="#ff000000"
+            android:padding="2dp" />
+
+	    <TextView
+	        android:id="@+id/card4_p3"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/small_card"
+	        android:gravity="center_vertical|center_horizontal"
+	        android:textColor="#ff000000"
+	        android:padding="2dp" />
+	    
+	    <TextView
+	        android:id="@+id/card5_p3"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/small_card"
+	        android:gravity="center_vertical|center_horizontal"
+	        android:textColor="#ff000000"
+	        android:padding="2dp" />
+
+	</LinearLayout>
+	
+	    
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="horizontal" >
+    
+        <Button
+            android:id="@+id/deal"
+            android:layout_weight="1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/deal"
+            android:padding="2dp" />
+
+	    <Button
+	        android:id="@+id/bid"
+	        android:layout_weight="1"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:text="@string/bid"
+	        android:padding="2dp" />
+	    
+	    <Button
+	        android:id="@+id/fold"
+	        android:layout_weight="1"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:text="@string/fold"
+	        android:padding="2dp" />
+	    
+	    <Button
+	        android:id="@+id/draw"
+	        android:layout_weight="1"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:text="@string/draw"
+	        android:padding="2dp" />
+	   
+	</LinearLayout>
+	   
+	<TextView
+            android:id="@+id/winner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="2dp" />
+	<!-- 
+	<EditText
+            android:id="@+id/im_text"
+            android:inputType="textMultiLine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" >
+
+	<requestFocus />
+	</EditText>
+
+    <Button
+            android:id="@+id/send_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="sendMessage"
+            android:text="@string/send" />
+	   
+	<ListView
+        android:id="@+id/chat_log"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" >
+    </ListView>
+	 -->
 </LinearLayout>
