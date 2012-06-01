@@ -17,6 +17,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -107,6 +108,16 @@ public class Poker2Activity extends Activity implements MessageListener, NodeLis
     private static boolean card3Red = false;
     private static boolean card4Red = false;
     private static boolean card5Red = false;
+    
+  //lower and upper bounds to deck for each suit
+  	private static final int DIAMONDS_LOW = 0;
+  	private static final int DIAMONDS_HIGH = 12;
+  	private static final int CLUBS_LOW = 13;
+  	private static final int CLUBS_HIGH = 25;
+  	private static final int HEARTS_LOW = 26;
+  	private static final int HEARTS_HIGH = 38;
+  	private static final int SPADES_LOW = 39;
+  	private static final int SPADES_HIGH = 51;
     
     //Card Value Strings
     private static final String ACE_OF_DIAMONDS = "Ace Dmds";
@@ -1190,11 +1201,43 @@ public class Poker2Activity extends Activity implements MessageListener, NodeLis
     
     public void refreshCardsView(int[] hand) {
     	//Refresh the cards and have them appear on the text view.
-    	card1.setText(findCardString(hand[0]));
-		card2.setText(findCardString(hand[1]));
-		card3.setText(findCardString(hand[2]));
-		card4.setText(findCardString(hand[3]));
-		card5.setText(findCardString(hand[4]));
+//    	card1.setText(findCardString(hand[0]));
+//		card2.setText(findCardString(hand[1]));
+//		card3.setText(findCardString(hand[2]));
+//		card4.setText(findCardString(hand[3]));
+//		card5.setText(findCardString(hand[4]));
+		
+		setCardText(card1, hand[0]);
+		setCardText(card2, hand[1]);
+		setCardText(card3, hand[2]);
+		setCardText(card4, hand[3]);
+		setCardText(card5, hand[4]);
+    }
+    
+    public void setCardText(TextView view, int card) {
+    	view.setText(findCardString(card));
+    	Drawable img;
+    	if(card <= DIAMONDS_HIGH) {
+    		img = view.getContext().getResources().getDrawable(R.drawable.diamond); //view.getContext().
+    		img.setBounds( 0, 0, 30, 30 );
+    		view.setCompoundDrawables(null, null, img, null);
+    		//view.setBackgroundResource(R.drawable.diamond);
+    	}else if (card <= CLUBS_HIGH) {
+    		img = view.getContext().getResources().getDrawable(R.drawable.club); //view.getContext().
+    		img.setBounds( 0, 0, 30, 30 );
+    		view.setCompoundDrawables(null, null, img, null);
+    		//view.setBackgroundResource(R.drawable.club);
+    	}else if (card <= HEARTS_HIGH) {
+    		img = view.getContext().getResources().getDrawable(R.drawable.heart); //view.getContext().
+    		img.setBounds( 0, 0, 30, 30 );
+    		view.setCompoundDrawables(null, null, img, null);
+    		//view.setBackgroundResource(R.drawable.heart);
+    	}else {
+    		img = view.getContext().getResources().getDrawable(R.drawable.spade); //view.getContext().
+    		img.setBounds( 0, 0, 30, 30 );
+    		view.setCompoundDrawables(null, null, img, null);
+    		//view.setBackgroundResource(R.drawable.spade);
+    	}
     }
     
     public void refreshCardsViewFinal(int numPlayers) {
@@ -1226,43 +1269,67 @@ public class Poker2Activity extends Activity implements MessageListener, NodeLis
     	int[] hand = new int[5];
     	mDeckState.getHand(hand, 0);
     	
-    	card1_p0.setText(findCardString(hand[0]));
-        card2_p0.setText(findCardString(hand[1]));
-        card3_p0.setText(findCardString(hand[2]));
-        card4_p0.setText(findCardString(hand[3]));
-        card5_p0.setText(findCardString(hand[4]));
+//    	card1_p0.setText(findCardString(hand[0]));
+//        card2_p0.setText(findCardString(hand[1]));
+//        card3_p0.setText(findCardString(hand[2]));
+//        card4_p0.setText(findCardString(hand[3]));
+//        card5_p0.setText(findCardString(hand[4]));
+        
+        setCardText(card1_p0, hand[0]);
+		setCardText(card2_p0, hand[1]);
+		setCardText(card3_p0, hand[2]);
+		setCardText(card4_p0, hand[3]);
+		setCardText(card5_p0, hand[4]);
     }
     
     public void refreshCardsViewP1() {
     	int[] hand = new int[5];
     	mDeckState.getHand(hand, 1);
     	
-    	card1_p1.setText(findCardString(hand[0]));
-        card2_p1.setText(findCardString(hand[1]));
-        card3_p1.setText(findCardString(hand[2]));
-        card4_p1.setText(findCardString(hand[3]));
-        card5_p1.setText(findCardString(hand[4]));
+//    	card1_p1.setText(findCardString(hand[0]));
+//        card2_p1.setText(findCardString(hand[1]));
+//        card3_p1.setText(findCardString(hand[2]));
+//        card4_p1.setText(findCardString(hand[3]));
+//        card5_p1.setText(findCardString(hand[4]));
+        
+        setCardText(card1_p1, hand[0]);
+		setCardText(card2_p1, hand[1]);
+		setCardText(card3_p1, hand[2]);
+		setCardText(card4_p1, hand[3]);
+		setCardText(card5_p1, hand[4]);
     }
 
     public void refreshCardsViewP2() {
     	int[] hand = new int[5];
     	mDeckState.getHand(hand, 2);
     	
-    	card1_p2.setText(findCardString(hand[0]));
-        card2_p2.setText(findCardString(hand[1]));
-        card3_p2.setText(findCardString(hand[2]));
-        card4_p2.setText(findCardString(hand[3]));
-        card5_p2.setText(findCardString(hand[4]));
+//    	card1_p2.setText(findCardString(hand[0]));
+//        card2_p2.setText(findCardString(hand[1]));
+//        card3_p2.setText(findCardString(hand[2]));
+//        card4_p2.setText(findCardString(hand[3]));
+//        card5_p2.setText(findCardString(hand[4]));
+    	
+    	setCardText(card1_p2, hand[0]);
+		setCardText(card2_p2, hand[1]);
+		setCardText(card3_p2, hand[2]);
+		setCardText(card4_p2, hand[3]);
+		setCardText(card5_p2, hand[4]);
     }
     public void refreshCardsViewP3() {
     	int[] hand = new int[5];
     	mDeckState.getHand(hand, 3);
     	
-    	card1_p3.setText(findCardString(hand[0]));
-        card2_p3.setText(findCardString(hand[1]));
-        card3_p3.setText(findCardString(hand[2]));
-        card4_p3.setText(findCardString(hand[3]));
-        card5_p3.setText(findCardString(hand[4]));
+//    	card1_p3.setText(findCardString(hand[0]));
+//        card2_p3.setText(findCardString(hand[1]));
+//        card3_p3.setText(findCardString(hand[2]));
+//        card4_p3.setText(findCardString(hand[3]));
+//        card5_p3.setText(findCardString(hand[4]));
+    	
+    	setCardText(card1_p3, hand[0]);
+		setCardText(card2_p3, hand[1]);
+		setCardText(card3_p3, hand[2]);
+		setCardText(card4_p3, hand[3]);
+		setCardText(card5_p3, hand[4]);
     }
     
     public void refreshPhase() {

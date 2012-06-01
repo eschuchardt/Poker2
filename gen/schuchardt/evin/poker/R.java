@@ -11,12 +11,16 @@ public final class R {
     public static final class attr {
     }
     public static final class drawable {
-        public static final int green_card=0x7f020000;
-        public static final int ic_launcher=0x7f020001;
-        public static final int poker_cards_splash=0x7f020002;
-        public static final int poker_ic_launcher=0x7f020003;
-        public static final int red_card=0x7f020004;
-        public static final int small_card=0x7f020005;
+        public static final int club=0x7f020000;
+        public static final int diamond=0x7f020001;
+        public static final int green_card=0x7f020002;
+        public static final int heart=0x7f020003;
+        public static final int ic_launcher=0x7f020004;
+        public static final int poker_cards_splash=0x7f020005;
+        public static final int poker_ic_launcher=0x7f020006;
+        public static final int red_card=0x7f020007;
+        public static final int small_card=0x7f020008;
+        public static final int spade=0x7f020009;
     }
     public static final class id {
         public static final int begin_game_button=0x7f050009;
