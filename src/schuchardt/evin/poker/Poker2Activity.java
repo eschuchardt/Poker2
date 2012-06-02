@@ -510,6 +510,7 @@ public class Poker2Activity extends Activity implements MessageListener, NodeLis
     TextView money;
     TextView phase;
     TextView p_num;
+    TextView current_bid;
     
 	TextView card1;
     TextView card2;
@@ -706,6 +707,7 @@ public class Poker2Activity extends Activity implements MessageListener, NodeLis
     	money = (TextView)findViewById(R.id.money);
         phase = (TextView)findViewById(R.id.phase);
         p_num = (TextView)findViewById(R.id.player_num);
+        current_bid = (TextView)findViewById(R.id.current_bid);
         
         card1 = (TextView)findViewById(R.id.card1);
         card2 = (TextView)findViewById(R.id.card2);
@@ -874,7 +876,7 @@ public class Poker2Activity extends Activity implements MessageListener, NodeLis
 					    				}
 					    				else {
 					    					Context context = getApplicationContext();
-					    					Toast toast = Toast.makeText(context, "Cannot Check.", TOAST_DURATION);
+					    					Toast toast = Toast.makeText(context, "Cannot Check.\n Either Call or Raise.", TOAST_DURATION);
 					    					toast.setGravity(Gravity.BOTTOM, 0, 0);
 					    					toast.show();
 					    				}
@@ -893,10 +895,11 @@ public class Poker2Activity extends Activity implements MessageListener, NodeLis
 					    					mDeckState.setPlayersBids(playerBid, PLAYER_NUM);
 					    					mDeckState.setPlayerUpdate(PLAYER_NUM, TRUE);
 					    					money.setText("$" + Integer.toString(mDeckState.getPlayersMoney(PLAYER_NUM)));
+					    					current_bid.setText(" :Current bid is " + mDeckState.getCurrentBid() + ".");
 					    				}
 					    				else {
 					    					Context context = getApplicationContext();
-					    					Toast toast = Toast.makeText(context, "Cannot Call.", TOAST_DURATION);
+					    					Toast toast = Toast.makeText(context, "Cannot Call.\n You must outbid your opponent.", TOAST_DURATION);
 					    					toast.setGravity(Gravity.BOTTOM, 0, 0);
 					    					toast.show();
 					    				}
@@ -944,23 +947,24 @@ public class Poker2Activity extends Activity implements MessageListener, NodeLis
 	//								    						mDeckState.setPhase(FINAL_PHASE);
 	//								    					}
 								    					money.setText("$" + Integer.toString(mDeckState.getPlayersMoney(PLAYER_NUM)));
+								    					current_bid.setText(" :Current bid is " + mDeckState.getCurrentBid() + ".");
 								    					sendMessage();
 								    				}
 								    				else {
 								    					Context context = getApplicationContext();
-								    					Toast toast = Toast.makeText(context, "Try Again.", TOAST_DURATION);
+								    					Toast toast = Toast.makeText(context, "Try Again.\n You must outbid your oponents.", TOAST_DURATION);
 								    					toast.setGravity(Gravity.BOTTOM, 0, 0);
 								    					toast.show();
 								    				}
 						        				}
 						        			});
 						        			alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-						        			 public void onClick(DialogInterface dialog, int whichButton) {
+						        			public void onClick(DialogInterface dialog, int whichButton) {
 						        			     // Canceled.
 						        			}
-						        			});
-						        			alert.show();
-						        			//END code to have user input bid
+					        			});
+					        			alert.show();
+					        			//END code to have user input bid
 							        			
 							        }
 							        	
@@ -1332,10 +1336,11 @@ public class Poker2Activity extends Activity implements MessageListener, NodeLis
 		setCardText(card5_p3, hand[4]);
     }
     
-    public void refreshPhase() {
-    	money.setText("$" + Integer.toString(mDeckState.getPlayersMoney(PLAYER_NUM)));
-    	phase.setText(" :" + mDeckState.getPhaseName() + " Phase");
-    }
+//    public void refreshPhase() {
+//    	money.setText("$" + Integer.toString(mDeckState.getPlayersMoney(PLAYER_NUM)));
+//    	phase.setText(" :" + mDeckState.getPhaseName() + " Phase");
+//    	current_bid.setText(" :Current bid is " + mDeckState.getCurrentBid() + ".");
+//    }
     
     public void resetCardColor() {
     	card1.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_card));
@@ -1585,16 +1590,23 @@ public class Poker2Activity extends Activity implements MessageListener, NodeLis
 				}
 			});
     	}
+    	else {
+    		if(layoutID == R.layout.play_view) {
+        		current_bid.setText(" :Current bid is " + mDeckState.getCurrentBid() + ".");
+    		}
+    	}
     	Context context = getApplicationContext();
 		Toast toast = Toast.makeText(context, mDeckState.getPhaseName(), 1000);
 		toast.setGravity(Gravity.BOTTOM, 0, 0);
 		toast.show();
+		
 		
     }
     
     public void populateTwoPlayer() {
     	money = (TextView)findViewById(R.id.money);
         phase = (TextView)findViewById(R.id.phase);
+        //current_bid = (TextView)findViewById(R.id.current_bid);
         
         card1_p0 = (TextView)findViewById(R.id.card1_p0);
         card2_p0 = (TextView)findViewById(R.id.card2_p0);
